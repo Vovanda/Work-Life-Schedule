@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row; /* Элементы в строку */
+    justify-content: space-between; /* Промежутки между элементами */
+    width: 100%;
+    max-width: 1200px;
+}
+
+.schedule-wrapper,
+.chart-container,
+.legend-wrapper {
+    /* Фон, скругления и тени убраны */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.schedule-wrapper {
+    width: 48%; /* Ширина для таблицы */
+}
+
+.chart-container {
+    width: 48%; /* Ширина для диаграмм */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-container canvas {
+    width: 100%;
+    height: auto;
+    max-width: 300px; /* Ограничение размера диаграмм */
+    max-height: 300px;
+}
+
+.legend-wrapper {
+    display: flex;
+    flex-direction: column; /* Легенда располагается вертикально */
+    width: 48%; /* Ширина для легенды */
+    margin-left: 20px; /* Отступ слева для отделения от диаграмм */
+    align-items: flex-start;
+}
+
+.legend {
+    font-size: 14px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.color-box {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+/* Медиазапросы для мобильных устройств */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Элементы выстраиваются вертикально */
+        align-items: center;
+    }
+    .schedule-wrapper,
+    .chart-container,
+    .legend-wrapper {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .legend-wrapper {
+        margin-top: 20px;
+    }
+}
+
+/* Скругления и тень для таблицы */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px; /* Скругление углов таблицы */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для таблицы */
+    overflow: hidden; /* Для корректного отображения скруглений */
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+/* Убираем границу для ячеек последнего ряда */
+tr:last-child td {
+    border-bottom: none;
+}
+
+</style>
+
+
+</head>
+<body>
+    <main>
+        <!-- Контейнер для расписания и диаграмм первой недели -->
+        <div class="container">
+            <div class="schedule-wrapper">
+                <h3>Неделя 1</h3>
+                <table id="week1-schedule">
+                    <tr>
+                        <th>Время</th>
+                        <th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th>
+                    </tr>
+                    <!-- Заполняется динамически -->
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="week1-chart"></canvas>
+            </div>
+        </div>
+        <!-- Контейнер для расписания и диаграмм второй недели -->
+        <div class="container">
+            <div class="schedule-wrapper">
+                <h3>Неделя 2</h3>
+                <table id="week2-schedule">
+                    <tr>
+                        <th>Время</th>
+                        <th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th>
+                    </tr>
+                    <!-- Заполняется динамически -->
+                </table>
+            </div>
+            <div class="chart-container">
+                <canvas id="week2-chart"></canvas>
+            </div>
+        </div>
+        <!-- Легенда -->
+        <div class="legend-wrapper">
+            <div class="legend" id="legend">
+                <h3>🔎 Расшифровка активностей</h3>
+                  <!-- Заполняется динамически -->
+            </div>
+        </div>
+    
+		</main>
+    <script>	
+   <!--	Если для активности продолжительность не указана, то будем считать, что она занимает весь блок времени до следующей активности согласо расписанию. -->
+const knownActivities = {
+    "AI": { code: "AI", label: "Изучение теории по AI", color: "#fce8e8", emoji: "𖡎"},
+    "CSH": { code: "CSH", label: "Изучение C#", color: "#e0d7f4", emoji: "📗"},
+    "DLNN": { code: "DLNN", label: "Глубокое обучение T5", color: "#cce7f5", emoji: "🤖" },
+    "TRN": { code: "TRN", label: "Тренировка", color: "#c9f7c4", emoji: "🏋️", duration: 2 },
+    "TMF": { code: "TMF", label: "Время с близкими", color: "#fcd7e7", emoji: "❤️" },
+    "PRK": { code: "PRK", label: "Прогулка", color: "#fff4e6", emoji: "🚶", duration: 0.5 },
+    "CLE": { code: "CLE", label: "Уборка", color: "#fff4c1", emoji: "🏠", duration: 1 },
+    "MEAL": { code: "MEAL", label: "Приготовление еды", color: "#fef3e4", emoji: "🍽️", duration: 1 },
+    "FREE": { code: "FREE", label: "Свободное время", color: "#f0f8ff", emoji: "🕊️", duration: 1 },
+    "SLEEP": { code: "SLEEP", label: "Сон", color: "#b0c4de", emoji: "🛏", duration: 8 }
+};
+
+const week1Schedule = [
+    { time: "09:00", activities: ["FREE", "DLNN", "FREE", "FREE", "CLE", "FREE", "FREE"] },
+    { time: "10:00", activities: ["CLE", "DLNN", "CLE", "FREE", "FREE", "CLE", "FREE"] },
+    { time: "11:00", activities: ["TRN", "AI", "TRN", "FREE", "TRN", "TRN", "FREE"] },
+    { time: "13:30", activities: ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"] },
+    { time: "14:00", activities: ["CSH", "TMF", "DLNN", "FREE", "DLNN", "CSH", "FREE"] },
+    { time: "17:00", activities: ["FREE", "FREE", "FREE", "FREE", "FREE", "FREE", "FREE"] },
+    { time: "18:00", activities: ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"] },
+    { time: "19:00", activities: ["PRK", "FREE", "PRK", "FREE", "FREE", "PRK", "FREE"] },
+    { time: "23:00", activities: ["SLEEP", "SLEEP", "SLEEP", "SLEEP", "SLEEP", "SLEEP", "SLEEP"] }
+];
+
+const week2Schedule = [
+    { time: "09:00", activities: ["FREE", "CSH", "FREE", "FREE", "DLNN", "CLE", "FREE"] },
+    { time: "10:00", activities: ["CLE", "CSH", "CLE", "FREE", "FREE", "FREE", "FREE"] },
+    { time: "11:00", activities: ["TRN", "TMF", "TRN", "FREE", "TRN", "TRN", "FREE"] },
+    { time: "13:30", activities: ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"] },
+    { time: "14:00", activities: ["AI", "DLNN", "AI", "FREE", "TMF", "DLNN", "FREE"] },
+    { time: "17:00", activities: ["FREE", "FREE", "FREE", "FREE", "FREE", "FREE", "FREE"] },
+    { time: "18:00", activities: ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"] },
+    { time: "19:00", activities: ["PRK", "FREE", "PRK", "FREE", "FREE", "PRK", "FREE"] },
+    { time: "23:00", activities: ["SLEEP", "SLEEP", "SLEEP", "SLEEP", "SLEEP", "SLEEP", "SLEEP"] }
+];
+
+
+        // Функция для заполнения null значений на основе предыдущей активности
+        function fillNullActivities(schedule) {
+            for (let i = 1; i < schedule.length; i++) {
+                for (let j = 1; j < 8; j++) {
+                    if (schedule[i].activities[j] === null) {
+                        schedule[i].activities[j] = schedule[i - 1].activities[j];
+                    }
+                }
+            }
+        }
+
+        fillNullActivities(week1Schedule); // Заполнение null для первой недели
+        fillNullActivities(week2Schedule); // Заполнение null для второй недели
+
+        // Функция для отображения расписания
+        function renderSchedule(weekSchedule, tableId) {
+            const table = document.getElementById(tableId);
+            weekSchedule.forEach(row => {
+                const tr = document.createElement('tr');
+                const timeCell = document.createElement('td');
+                timeCell.textContent = row.time;
+                tr.appendChild(timeCell);
+                row.activities.forEach(activity => {
+                    const td = document.createElement('td');
+                    const activityDetails = knownActivities[activity];
+                    if (activityDetails) {
+                        td.innerHTML = `<span class="activity-emoji">${activityDetails.emoji}</span><br><span class="activity-code">${activityDetails.code}</span>`;
+                        td.style.backgroundColor = activityDetails.color;
+                    }
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+        }
+
+        renderSchedule(week1Schedule, 'week1-schedule');
+        renderSchedule(week2Schedule, 'week2-schedule');
+
+// Функция для отображения диаграмм с учетом активности по времени
+function renderChart(weekSchedule, chartId) {
+    // Считаем количество часов для каждой активности за неделю
+    const activityHours = Object.keys(knownActivities).reduce((acc, activity) => {
+        acc[activity] = 0;
+        weekSchedule.forEach(row => {
+            row.activities.forEach((a, index) => {
+                if (a === activity) {
+                    // Если для активности указана продолжительность, используем её, иначе считаем, что она занимает весь блок времени
+                    const activityDuration = knownActivities[a].duration || 1;
+                    // Если продолжительность не указана (например, null или undefined), считаем, что активность занимает весь временной блок
+                    acc[activity] += activityDuration;
+                }
+            });
+        });
+        return acc;
+    }, {});
+
+    // Формируем данные для диаграммы
+    const chartData = {
+        labels: Object.keys(knownActivities).map(activity => knownActivities[activity].label),
+        datasets: [{
+            data: Object.keys(knownActivities).map(activity => activityHours[activity]),
+            backgroundColor: Object.keys(knownActivities).map(activity => knownActivities[activity].color),
+            label: 'Часы активности'  // Добавляем заголовок для данных на диаграмме
+        }]
+    };
+
+    const ctx = document.getElementById(chartId).getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: chartData,
+        options: {
+            plugins: {
+                datalabels: {
+                    // Отображаем количество часов (сумма) на диаграмме
+                    formatter: (value) => value > 0 ? `${value} ч` : ''
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false  // Скрываем легенду
+                }
+            }
+        }
+    });
+}
+        renderChart(week1Schedule, 'week1-chart');
+        renderChart(week2Schedule, 'week2-chart');
+		
+		function renderLegend() {
+    const legendContainer = document.getElementById('legend');
+    Object.keys(knownActivities).forEach(activityCode => {
+        const activity = knownActivities[activityCode];
+        const legendItem = document.createElement('span');
+        legendItem.innerHTML = `<div class="color-box" style="background-color: ${activity.color};"></div>  ${activity.emoji} ${activity.label}`;
+        legendContainer.appendChild(legendItem);
+    });
+}
+
+renderLegend();  // Заполняем легенду
+
+function adjustChartVisibility() {
+    const chartContainers = document.querySelectorAll('.chart-container');
+    const isLandscape = window.innerWidth > window.innerHeight;
+    
+    chartContainers.forEach(container => {
+        container.style.display = isLandscape ? '' : 'none';
+    });
+}
+
+window.addEventListener('resize', adjustChartVisibility);
+document.addEventListener('DOMContentLoaded', adjustChartVisibility);
+    </script>
+</body>
+</html>
