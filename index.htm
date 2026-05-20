@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Расписание · Вова</title>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <style>
 :root {
   --bg: #0b1220;
@@ -17,6 +18,8 @@
   --link: #93c5fd;
   --cell-text: #1f2937;
   --cell-border: rgba(255,255,255,0.04);
+  --tab-bg: #111827;
+  --tab-active: #1f2937;
 }
 [data-theme="light"] {
   --bg: #fafafa;
@@ -30,6 +33,8 @@
   --link: #2563eb;
   --cell-text: #374151;
   --cell-border: rgba(0,0,0,0.04);
+  --tab-bg: #f3f4f6;
+  --tab-active: #ffffff;
 }
 * { box-sizing: border-box; }
 html, body {
@@ -61,6 +66,28 @@ h1 { margin: 0; font-size: 18px; font-weight: 500; color: var(--muted); letter-s
   font-size: 14px;
 }
 .theme-toggle:hover { background: var(--surface-2); }
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--tab-bg);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+.tab {
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background .15s, color .15s;
+  user-select: none;
+}
+.tab.active { background: var(--tab-active); color: var(--text); }
+
 .cards {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -68,58 +95,31 @@ h1 { margin: 0; font-size: 18px; font-weight: 500; color: var(--muted); letter-s
   margin-bottom: 24px;
 }
 @media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
-.now-card, .next-card {
-  padding: 24px;
-  border-radius: 20px;
-}
+.now-card, .next-card { padding: 24px; border-radius: 20px; }
 .now-card { color: #1f2937; }
-.now-card .label,
-.next-card .label {
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  opacity: 0.7;
+.now-card .label, .next-card .label {
+  font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.7;
 }
-.now-card .activity { font-size: 42px; margin-top: 8px; font-weight: 600; }
+.now-card .activity { font-size: 38px; margin-top: 8px; font-weight: 600; line-height: 1.1; }
 .next-card { background: var(--next-bg); color: var(--next-text); }
-.next-card .name { font-size: 24px; margin-top: 8px; font-weight: 600; }
+.next-card .name { font-size: 22px; margin-top: 8px; font-weight: 600; }
 .next-card .when { opacity: 0.8; margin-top: 4px; }
 .next-card a { color: var(--link); margin-top: 10px; display: inline-block; }
+
 .week-title { font-size: 20px; font-weight: 600; margin: 12px 0; }
-table.schedule {
-  border-collapse: separate;
-  border-spacing: 6px;
-  width: 100%;
-}
-.schedule th {
-  padding: 10px 6px;
-  font-weight: 500;
-  color: var(--muted);
-  font-size: 12px;
-}
-.schedule th.today {
-  color: var(--accent);
-  font-weight: 600;
-  border-bottom: 2px solid var(--accent);
-}
+table.schedule { border-collapse: separate; border-spacing: 6px; width: 100%; }
+.schedule th { padding: 10px 6px; font-weight: 500; color: var(--muted); font-size: 12px; }
+.schedule th.today { color: var(--accent); font-weight: 600; border-bottom: 2px solid var(--accent); }
 .schedule td.time {
-  padding: 6px 10px;
-  color: var(--muted);
-  font-size: 12px;
+  padding: 6px 10px; color: var(--muted); font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 .schedule tr.current td.time {
-  color: var(--accent);
-  font-weight: 600;
-  border-right: 2px solid var(--accent);
+  color: var(--accent); font-weight: 600; border-right: 2px solid var(--accent);
 }
 .schedule td.cell {
-  padding: 14px 6px;
-  border-radius: 12px;
-  border: 1px solid var(--cell-border);
-  text-align: center;
-  line-height: 1.2;
-  transition: transform .15s;
+  padding: 12px 6px; border-radius: 12px; border: 1px solid var(--cell-border);
+  text-align: center; line-height: 1.2;
 }
 .schedule td.cell.in-cross { border-color: rgba(245,158,11,0.33); }
 [data-theme="light"] .schedule td.cell.in-cross { border-color: rgba(37,99,235,0.33); }
@@ -130,25 +130,22 @@ table.schedule {
 [data-theme="light"] .schedule td.cell.now {
   box-shadow: 0 0 0 4px rgba(37,99,235,0.18), 0 4px 14px rgba(0,0,0,0.15);
 }
-.cell .emoji { font-size: 20px; color: var(--cell-text); }
-.cell .code { font-size: 10px; color: var(--cell-text); margin-top: 2px; font-weight: 500; }
+.cell .emoji { font-size: 22px; color: var(--cell-text); line-height: 1; }
+.cell .emoji img.emoji { width: 22px; height: 22px; vertical-align: middle; }
+.now-card .activity img.emoji { width: 38px; height: 38px; vertical-align: -8px; margin-right: 4px; }
+.cell .code { font-size: 10px; color: var(--cell-text); margin-top: 4px; font-weight: 500; }
+img.emoji { display: inline-block; }
+
 .events {
-  margin-top: 32px;
-  padding: 24px;
-  background: var(--surface);
-  border-radius: 16px;
+  margin-top: 32px; padding: 24px; background: var(--surface); border-radius: 16px;
 }
 .events h2 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
 .event { padding: 8px 0; border-top: 1px solid var(--cell-border); }
 .event:first-of-type { border-top: 0; }
 .event .name { font-weight: 600; }
 .event .meta { color: var(--muted); font-size: 13px; margin-top: 2px; }
-footer {
-  text-align: center;
-  margin-top: 32px;
-  color: var(--muted);
-  font-size: 12px;
-}
+
+footer { text-align: center; margin-top: 32px; color: var(--muted); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -157,52 +154,100 @@ footer {
     <h1>Расписание</h1>
     <button class="theme-toggle" id="theme-toggle">🌙 Тёмная</button>
   </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-key="real">📅 Как есть</div>
+    <div class="tab" data-key="ideal">✨ Как хотел бы (ЗОЖ)</div>
+  </div>
+
   <div class="cards">
     <div class="now-card" id="now-card"></div>
     <div class="next-card" id="next-card"></div>
   </div>
+
   <div class="week-title" id="week-title"></div>
   <table class="schedule" id="schedule"></table>
+
   <div class="events">
     <h2>Постоянные события</h2>
     <div id="events"></div>
   </div>
+
   <footer id="footer"></footer>
 </main>
 
 <script>
-const DATA = {
-  "timezone": "Asia/Omsk",
-  "activities": {
-    "SLEEP": {"label": "Сон",                       "color": "#b0c4de", "emoji": "🛏️"},
-    "MEAL":  {"label": "Еда",                       "color": "#fef3e4", "emoji": "🍽️"},
-    "ENG":   {"label": "Английский (Skyeng)",       "color": "#ffe0b2", "emoji": "🇬🇧", "link": "https://student.skyeng.ru/"},
-    "DOGS":  {"label": "Выставка собак (с мамой)",  "color": "#d7ccc8", "emoji": "🐕"},
-    "GAME":  {"label": "Игры с Викой",              "color": "#fcd7e7", "emoji": "🎮"},
-    "TMF":   {"label": "Время с Викой",             "color": "#f8bbd0", "emoji": "❤️"},
-    "FREE":  {"label": "Свободно",                  "color": "#f0f8ff", "emoji": "🕊️"}
+const SCHEDULES = {
+  real: {
+    "note": "Будни: подъём 11-12, завтрак 13, работа 14-20, английский Пн/Ср 20, ужин 21:30, отдых",
+    "activities": {
+      "SLEEP": {"label": "Сон",                       "color": "#b0c4de", "emoji": "🛏️"},
+      "MEAL":  {"label": "Еда",                       "color": "#fef3e4", "emoji": "🍽️"},
+      "WORK":  {"label": "Работа 2SkyMobile",         "color": "#cce7f5", "emoji": "💼"},
+      "ENG":   {"label": "Английский (Skyeng)",       "color": "#ffe0b2", "emoji": "🇬🇧", "link": "https://student.skyeng.ru/"},
+      "GAME":  {"label": "Игры с Викой",              "color": "#fcd7e7", "emoji": "🎮"},
+      "TMF":   {"label": "Время с близкими",          "color": "#f8bbd0", "emoji": "❤️"},
+      "REELS": {"label": "Залип в рилсики",           "color": "#e1bee7", "emoji": "📱"},
+      "FREE":  {"label": "Свободно / просыпаюсь",     "color": "#f0f8ff", "emoji": "🕊️"}
+    },
+    "weeks": [
+      {
+        "name": "Как есть",
+        "rows": [
+          {"time": "00:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP"]},
+          {"time": "11:30", "activities": ["FREE", "FREE", "FREE", "FREE", "FREE", "FREE", "FREE"]},
+          {"time": "13:00", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
+          {"time": "14:00", "activities": ["WORK", "WORK", "WORK", "WORK", "WORK", "FREE", "FREE"]},
+          {"time": "15:30", "activities": ["WORK", "MEAL", "WORK", "MEAL", "WORK", "TMF",  "TMF"]},
+          {"time": "16:30", "activities": ["WORK", "WORK", "WORK", "WORK", "WORK", "FREE", "FREE"]},
+          {"time": "20:00", "activities": ["ENG",  "WORK", "ENG",  "WORK", "WORK", "FREE", "FREE"]},
+          {"time": "21:30", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
+          {"time": "22:30", "activities": ["TMF",  "REELS","TMF",  "REELS","GAME", "GAME", "TMF"]}
+        ]
+      }
+    ],
+    "fixed_events": [
+      {"name": "Английский Skyeng", "days": ["Пн","Ср"], "time": "20:00", "url": "https://student.skyeng.ru/"}
+    ]
   },
-  "weeks": [
-    {
-      "name": "Обычная неделя",
-      "rows": [
-        {"time": "00:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP"]},
-        {"time": "10:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","DOGS", "SLEEP"]},
-        {"time": "12:00", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "DOGS", "MEAL"]},
-        {"time": "13:00", "activities": ["FREE", "FREE", "FREE", "FREE", "FREE", "DOGS", "FREE"]},
-        {"time": "15:00", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "FREE", "MEAL"]},
-        {"time": "16:00", "activities": ["FREE", "FREE", "FREE", "FREE", "FREE", "FREE", "FREE"]},
-        {"time": "20:00", "activities": ["FREE", "FREE", "ENG",  "FREE", "ENG",  "FREE", "FREE"]},
-        {"time": "21:00", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "TMF",  "TMF"]},
-        {"time": "22:00", "activities": ["TMF",  "TMF",  "TMF",  "TMF",  "TMF",  "GAME", "TMF"]},
-        {"time": "23:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP"]}
-      ]
-    }
-  ],
-  "fixed_events": [
-    {"name": "Английский Skyeng", "days": ["Ср","Пт"], "time": "20:00", "url": "https://student.skyeng.ru/"},
-    {"name": "Выставка собак",    "days": ["Сб"],     "time": "10:00", "with": "мама"}
-  ]
+  ideal: {
+    "note": "ЗОЖ-баланс: подъём 8, регулярная еда, тренировки 4-5/нед, ужин 18:30, сон до 23",
+    "activities": {
+      "SLEEP": {"label": "Сон",                       "color": "#b0c4de", "emoji": "🛏️"},
+      "MEAL":  {"label": "Еда",                       "color": "#fef3e4", "emoji": "🍽️"},
+      "WORK":  {"label": "Работа 2SkyMobile",         "color": "#cce7f5", "emoji": "💼"},
+      "PROJ":  {"label": "Личные проекты",            "color": "#d0e6c9", "emoji": "🛠️"},
+      "STUDY": {"label": "Изучение теории",           "color": "#fce8e8", "emoji": "📚"},
+      "TRN":   {"label": "Тренировка",                "color": "#c9f7c4", "emoji": "🏋️"},
+      "ENG":   {"label": "Английский (Skyeng)",       "color": "#ffe0b2", "emoji": "🇬🇧", "link": "https://student.skyeng.ru/"},
+      "GAME":  {"label": "Игры с Викой",              "color": "#fcd7e7", "emoji": "🎮"},
+      "TMF":   {"label": "Время с близкими",          "color": "#f8bbd0", "emoji": "❤️"},
+      "PRK":   {"label": "Прогулка",                  "color": "#fff4e6", "emoji": "🚶"},
+      "FREE":  {"label": "Свободно",                  "color": "#f0f8ff", "emoji": "🕊️"}
+    },
+    "weeks": [
+      {
+        "name": "Как хотел бы (ЗОЖ)",
+        "rows": [
+          {"time": "00:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP"]},
+          {"time": "08:00", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
+          {"time": "09:00", "activities": ["STUDY","WORK", "STUDY","WORK", "STUDY","PROJ", "PROJ"]},
+          {"time": "12:30", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
+          {"time": "13:30", "activities": ["WORK", "WORK", "WORK", "WORK", "WORK", "PRK",  "TMF"]},
+          {"time": "16:30", "activities": ["TRN",  "PRK",  "TRN",  "STUDY","TRN",  "TRN",  "FREE"]},
+          {"time": "17:30", "activities": ["STUDY","STUDY","FREE", "PROJ", "FREE", "FREE", "TMF"]},
+          {"time": "18:30", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
+          {"time": "19:30", "activities": ["PROJ", "STUDY","PROJ", "PROJ", "STUDY","TMF",  "TMF"]},
+          {"time": "20:00", "activities": ["ENG",  "FREE", "ENG",  "FREE", "FREE", "TMF",  "TMF"]},
+          {"time": "21:00", "activities": ["TMF",  "TMF",  "TMF",  "TMF",  "GAME", "GAME", "TMF"]},
+          {"time": "23:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP"]}
+        ]
+      }
+    ],
+    "fixed_events": [
+      {"name": "Английский Skyeng", "days": ["Пн","Ср"], "time": "20:00", "url": "https://student.skyeng.ru/"}
+    ]
+  }
 };
 const DAYS_RU = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 
@@ -213,53 +258,60 @@ function applyTheme(t) {
   root.setAttribute("data-theme", t);
   toggleBtn.textContent = t === "dark" ? "🌙 Тёмная" : "☀️ Светлая";
   localStorage.setItem("theme", t);
+  parseEmoji(toggleBtn);
 }
-applyTheme(localStorage.getItem("theme") || "dark");
 toggleBtn.onclick = () => applyTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
 
-// ---------- Time helpers (Omsk = UTC+6) ----------
-function nowOmsk() {
-  const utc = new Date();
-  return new Date(utc.getTime() + (utc.getTimezoneOffset() + 6 * 60) * 60000);
+// ---------- Tabs ----------
+let activeKey = localStorage.getItem("schedule") || "real";
+function setActive(key) {
+  activeKey = key;
+  localStorage.setItem("schedule", key);
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.key === key));
+  render();
 }
-function isoWeek(d) {
-  const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
-  const dn = t.getUTCDay() || 7;
-  t.setUTCDate(t.getUTCDate() + 4 - dn);
-  const ys = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
-  return Math.ceil((((t - ys) / 86400000) + 1) / 7);
-}
-function pickWeek(now) {
-  const weeks = DATA.weeks;
-  if (weeks.length === 1) return weeks[0];
-  return isoWeek(now) % 2 === 1 ? weeks[0] : weeks[1];
-}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => setActive(t.dataset.key));
+
+// ---------- Time (Omsk UTC+6) ----------
+function nowOmsk() { return new Date(Date.now() + 6 * 3600 * 1000); }
+function oh(d) { return String(d.getUTCHours()).padStart(2,"0"); }
+function om(d) { return String(d.getUTCMinutes()).padStart(2,"0"); }
+function oDay(d) { return (d.getUTCDay() + 6) % 7; }  // Mon=0
+
+function pickWeek(data) { return data.weeks[0]; }
 function currentSlot(week, now) {
-  const wd = (now.getUTCDay() + 6) % 7; // Mon=0
-  const hhmm = String(now.getUTCHours()).padStart(2,"0") + ":" + String(now.getUTCMinutes()).padStart(2,"0");
-  let idx = 0;
-  for (let i = 0; i < week.rows.length; i++) if (week.rows[i].time <= hhmm) idx = i;
-  return { slot: idx, day: wd };
+  const day = oDay(now);
+  const hhmm = oh(now) + ":" + om(now);
+  let slot = 0;
+  for (let i = 0; i < week.rows.length; i++) if (week.rows[i].time <= hhmm) slot = i;
+  return { slot, day };
+}
+
+// ---------- Emoji ----------
+function parseEmoji(el) {
+  if (window.twemoji) twemoji.parse(el || document.body, { folder: "svg", ext: ".svg" });
 }
 
 // ---------- Render ----------
 function render() {
+  const data = SCHEDULES[activeKey];
   const now = nowOmsk();
-  const week = pickWeek(now);
+  const week = pickWeek(data);
   const { slot, day } = currentSlot(week, now);
   const code = week.rows[slot].activities[day];
-  const act = DATA.activities[code];
+  const act = data.activities[code];
 
   // Now card
-  document.getElementById("now-card").style.background = act.color;
-  document.getElementById("now-card").innerHTML = `
-    <div class="label">Сейчас · ${DAYS_RU[day]} ${String(now.getUTCHours()).padStart(2,"0")}:${String(now.getUTCMinutes()).padStart(2,"0")} · Омск</div>
+  const nowCard = document.getElementById("now-card");
+  nowCard.style.background = act.color;
+  nowCard.innerHTML = `
+    <div class="label">Сейчас · ${DAYS_RU[day]} ${oh(now)}:${om(now)} · Омск</div>
     <div class="activity">${act.emoji} ${act.label}</div>
   `;
 
   // Next event
   let soonest = null, best = null;
-  for (const ev of DATA.fixed_events) {
+  for (const ev of data.fixed_events) {
     for (const d of ev.days) {
       const targetDay = DAYS_RU.indexOf(d);
       let off = (targetDay - day + 7) % 7;
@@ -271,29 +323,30 @@ function render() {
       if (!soonest || cand < soonest) { soonest = cand; best = ev; }
     }
   }
+  const nextCard = document.getElementById("next-card");
   if (best) {
     const diff = soonest - now;
     const h = Math.floor(diff / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
     const when = h ? `через ${h}ч ${m}м` : `через ${m}м`;
     const link = best.url ? `<a href="${best.url}" target="_blank">↗ открыть</a>` : "";
-    const evDay = (soonest.getUTCDay() + 6) % 7;
-    document.getElementById("next-card").innerHTML = `
+    const evDay = oDay(soonest);
+    nextCard.innerHTML = `
       <div class="label">Следующее</div>
       <div class="name">${best.name}</div>
-      <div class="when">${DAYS_RU[evDay]} ${String(soonest.getUTCHours()).padStart(2,"0")}:${String(soonest.getUTCMinutes()).padStart(2,"0")} · ${when}</div>
+      <div class="when">${DAYS_RU[evDay]} ${oh(soonest)}:${om(soonest)} · ${when}</div>
       <div>${link}</div>
     `;
+  } else {
+    nextCard.innerHTML = `<div class="label">Следующее</div><div class="when">—</div>`;
   }
 
-  // Week title
+  // Title
   document.getElementById("week-title").textContent = week.name;
 
   // Grid
   let html = "<tr><th></th>";
-  for (let i = 0; i < 7; i++) {
-    html += `<th class="${i === day ? "today" : ""}">${DAYS_RU[i]}</th>`;
-  }
+  for (let i = 0; i < 7; i++) html += `<th class="${i === day ? "today" : ""}">${DAYS_RU[i]}</th>`;
   html += "</tr>";
   for (let r = 0; r < week.rows.length; r++) {
     const row = week.rows[r];
@@ -301,7 +354,7 @@ function render() {
     html += `<tr class="${isCurR ? "current" : ""}"><td class="time">${row.time}</td>`;
     for (let d = 0; d < 7; d++) {
       const c = row.activities[d];
-      const a = DATA.activities[c];
+      const a = data.activities[c];
       const isNow = isCurR && d === day;
       const inCross = isCurR || d === day;
       const cls = "cell" + (isNow ? " now" : (inCross ? " in-cross" : ""));
@@ -314,23 +367,25 @@ function render() {
   }
   document.getElementById("schedule").innerHTML = html;
 
-  // Events list
-  document.getElementById("events").innerHTML = DATA.fixed_events.map(ev => {
+  // Events
+  document.getElementById("events").innerHTML = data.fixed_events.map(ev => {
     const extras = [];
     if (ev.with) extras.push(`с ${ev.with}`);
     if (ev.url) extras.push(`<a href="${ev.url}" target="_blank">${ev.url}</a>`);
     return `<div class="event">
       <div class="name">${ev.name}</div>
-      <div class="meta">${ev.days.join(", ")} · ${ev.time} · ${extras.join(" · ")}</div>
+      <div class="meta">${ev.days.join(", ")} · ${ev.time}${extras.length ? " · " + extras.join(" · ") : ""}</div>
     </div>`;
   }).join("");
 
-  // Footer
   document.getElementById("footer").textContent =
-    `Автообновление каждую минуту · ${now.toISOString().replace("T"," ").slice(0,16)} Омск`;
+    `${data.note} · автообновление каждую минуту · ${oh(now)}:${om(now)} Омск`;
+
+  parseEmoji(document.body);
 }
 
-render();
+applyTheme(localStorage.getItem("theme") || "dark");
+setActive(activeKey);
 setInterval(render, 60000);
 </script>
 </body>
