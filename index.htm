@@ -179,16 +179,17 @@ footer { text-align: center; margin-top: 32px; color: var(--muted); font-size: 1
 <script>
 const SCHEDULES = {
   real: {
-    "note": "Будни: подъём 11-12, завтрак 13, работа 14-20, английский Пн/Ср 20, ужин 21:30, отдых",
+    "note": "Подъём 11-12, завтрак 13, после еды и до 22 — WORK или PROJ (перетекают). Ужин 21:30, после 22 отдых",
     "activities": {
       "SLEEP": {"label": "Сон",                       "color": "#b0c4de", "emoji": "🛏️"},
       "MEAL":  {"label": "Еда",                       "color": "#fef3e4", "emoji": "🍽️"},
       "WORK":  {"label": "Работа 2SkyMobile",         "color": "#cce7f5", "emoji": "💼"},
+      "PROJ":  {"label": "Личные проекты (AVOX/SAM)", "color": "#d0e6c9", "emoji": "🛠️"},
       "ENG":   {"label": "Английский (Skyeng)",       "color": "#ffe0b2", "emoji": "🇬🇧", "link": "https://student.skyeng.ru/"},
       "GAME":  {"label": "Игры с Викой",              "color": "#fcd7e7", "emoji": "🎮"},
       "TMF":   {"label": "Время с близкими",          "color": "#f8bbd0", "emoji": "❤️"},
       "REELS": {"label": "Залип в рилсики",           "color": "#e1bee7", "emoji": "📱"},
-      "FREE":  {"label": "Свободно / просыпаюсь",     "color": "#f0f8ff", "emoji": "🕊️"}
+      "FREE":  {"label": "Просыпаюсь / залип в телефон","color": "#f0f8ff", "emoji": "🕊️"}
     },
     "weeks": [
       {
@@ -197,10 +198,9 @@ const SCHEDULES = {
           {"time": "00:00", "activities": ["SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP","SLEEP"]},
           {"time": "11:30", "activities": ["FREE", "FREE", "FREE", "FREE", "FREE", "FREE", "FREE"]},
           {"time": "13:00", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
-          {"time": "14:00", "activities": ["WORK", "WORK", "WORK", "WORK", "WORK", "FREE", "FREE"]},
-          {"time": "15:30", "activities": ["WORK", "MEAL", "WORK", "MEAL", "WORK", "TMF",  "TMF"]},
-          {"time": "16:30", "activities": ["WORK", "WORK", "WORK", "WORK", "WORK", "FREE", "FREE"]},
-          {"time": "20:00", "activities": ["ENG",  "WORK", "ENG",  "WORK", "WORK", "FREE", "FREE"]},
+          {"time": "14:00", "activities": ["WORK", "WORK", "WORK", "WORK", "WORK", "PROJ", "PROJ"]},
+          {"time": "17:00", "activities": ["WORK", "PROJ", "WORK", "PROJ", "WORK", "PROJ", "PROJ"]},
+          {"time": "20:00", "activities": ["ENG",  "WORK", "ENG",  "WORK", "WORK", "TMF",  "TMF"]},
           {"time": "21:30", "activities": ["MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL", "MEAL"]},
           {"time": "22:30", "activities": ["TMF",  "REELS","TMF",  "REELS","GAME", "GAME", "TMF"]}
         ]
