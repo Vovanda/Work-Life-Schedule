@@ -533,9 +533,7 @@
   .day-prog > span{display:block;height:100%;border-radius:999px;
     background:linear-gradient(90deg,var(--blue),var(--mint));transition:width .35s ease}
 
-  /* ==== ЛЕГЕНДА, ПОДВАЛ ======================================================= */
-  /* legend */
-  /* легенда слева, кнопка сохранения справа на её уровне */
+  /* ==== ПЛАШКА ФИЛЬТРОВ, ПОДВАЛ =============================================== */
   /* Пустое расписание из-за фильтра пугает: человек мог забыть о нём и решить,
      что пар нет. Плашка объясняет и даёт сбросить, не заходя в меню. */
   .filternote{display:flex;align-items:center;gap:8px;margin:10px 0 0;padding:8px 12px;
@@ -545,18 +543,6 @@
   .linkbtn{border:0;background:none;padding:0;margin-left:auto;cursor:pointer;
     font:inherit;font-weight:800;color:var(--blue-ink);text-decoration:underline}
   .linkbtn:hover{color:var(--now)}
-  .legend-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-  .legend{padding:8px 0 2px;min-width:0}
-  @media(max-width:640px){
-    .legend-row{flex-direction:column;gap:6px}
-    .png-btn{margin-top:0;align-self:flex-start}
-  }
-  .lg-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
-  .lg-row+.lg-row{margin-top:5px}
-  .lg{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
-  .lg i{width:12px;height:12px;border-radius:50%;display:inline-block}
-  .lg i.ring{background:transparent!important;border:2px solid var(--gold)}
-  .lg i.ring.now{border-color:var(--now)}
 
 
   /* ==== АДАПТИВ · узкие экраны ================================================ */
@@ -959,9 +945,6 @@ document.getElementById('gateForm').addEventListener('submit', async e => {
       </div>
     </div>
 
-    <div class="wrap legend-row">
-      <div id="legend" class="legend"></div>
-    </div>
     <div class="wrap"><div id="filternote" class="filternote" hidden>
       <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
       <span>Показаны не все дела: включены фильтры</span>
@@ -1676,7 +1659,6 @@ function render(){
   fillSugg();
   const c=$("content");
   const goalsView=st.view==="goals";
-  document.getElementById("legend").hidden=goalsView;
   // Дела со сроком, но без часа стоят полосой над сеткой: в самой сетке им
   // негде встать, а помнить о них надо каждый день периода.
   const banner=goalsView?"":spanBanner();
@@ -1773,15 +1755,6 @@ function fillSugg(){
     (r.tags||[]).forEach(t=>add(t,"метка","var(--lav)"));
   });
   SUGG=out;
-}
-
-/* Легенда над расписанием: цвет полоски — что за дело, кольцо — сегодня и сейчас. */
-function fillLegend(){
-  const cats=Object.values(MY_TYPE).map(c=>
-    `<span class="lg"><i style="background:${c.color}"></i>${c.label}</span>`).join("");
-  const marks=`<span class="lg"><i class="ring"></i>сегодня</span>`
-    +`<span class="lg"><i class="ring now"></i>сейчас / ближайшее</span>`;
-  $("legend").innerHTML=`<div class="lg-row">${cats}</div><div class="lg-row">${marks}</div>`;
 }
 
 /* Переключение вида и периода. */
@@ -1961,7 +1934,6 @@ function bindHistory(){
 function initControls(){
   const d=collectDictionaries();
   fillDictionaries(d);
-  fillLegend();
   bindViewButtons();
   bindPicker();
   bindSearch(d);
@@ -2115,7 +2087,6 @@ function schedulePlaceholder(text){
   const c=$("content");
   if(c)c.innerHTML='<div class="emptystate"><div class="big">'
     +'<svg class="ic" aria-hidden="true"><use href="#i-cloudsun"/></svg></div>'+text+'</div>';
-  const legend=$("legend"); if(legend)legend.innerHTML="";
   document.documentElement.classList.remove("preload");
 }
 
