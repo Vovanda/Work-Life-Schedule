@@ -705,7 +705,7 @@
 //   crypto.subtle.digest('SHA-256', new TextEncoder().encode('новый-пароль'))
 //     .then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
 // и вставить результат вместо строки ниже.
-const PASSWORD_HASH = '485bec23f90d24657e3ce78932b3dde1293b1b6a84eed5a725a53898412eb006';
+const PASSWORD_HASH = 'a549921593e91f56ccaa206423919dfe5a57752b6f9abe26c7bd48f9369df229';
 async function sha256Hex(text){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
