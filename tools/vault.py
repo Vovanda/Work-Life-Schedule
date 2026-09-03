@@ -273,6 +273,9 @@ def build(args, prev=None):
         "room": args.room if args.room is not None else prev.get("room", ""),
         "note": args.note if args.note is not None else prev.get("note", ""),
         "tags": list(args.tag) if args.tag else prev.get("tags", []),
+        # Сделанные дни. У повтора одна запись на все шесть дней, поэтому
+        # отметка — не флаг, а список дат: третье закрыто, четвёртое ещё нет.
+        "done": sorted(set(prev.get("done") or [])),
         "repeat": parse_repeat(args) or prev.get("repeat"),
         "skip": sorted(set((prev.get("skip") or []) + list(args.skip or []))),
         "move": {**(prev.get("move") or {}), **parse_moves(args.move)},
@@ -344,6 +347,30 @@ BLANK = {"subject": None, "date": None, "time": None, "duration": None, "type": 
          "skip": None, "move": None}
 
 
+def applies_on(record, date):
+    """Стоит ли дело в этот день: своей датой или правилом повторения."""
+    if record.get("date") == date:
+        return True
+    rule = record.get("repeat")
+    if not rule:
+        return False
+    if date in (record.get("skip") or []):
+        return False
+    start, stop = ruk(record.get("date")), ruk(rule.get("until"))
+    here = ruk(date)
+    if not (start and stop and here) or not (start <= here <= stop):
+        return False
+    day, month, year = (int(x) for x in date.split("."))
+    import datetime
+    return datetime.date(year, month, day).weekday() in rule["days"]
+
+
+def ruk(text):
+    """ДД.ММ.ГГГГ -> ГГГГММДД: такие строки сравниваются как даты."""
+    parts = (text or "").split(".")
+    return parts[2] + parts[1] + parts[0] if len(parts) == 3 else ""
+
+
 def find(records, ident):
     hits = [r for r in records if r["id"] == ident or r["id"].startswith(ident)]
     if not hits:
@@ -387,6 +414,7 @@ def main():
                        help="перенести одно повторение: ДД.ММ.ГГГГ=ДД.ММ.ГГГГ")
 
     for name, help_text in (("list", "показать записи"), ("add", "добавить"),
+                            ("done", "отметить сделанным"), ("undone", "снять отметку"),
                             ("edit", "изменить"), ("rm", "удалить"),
                             ("import", "залить распорядок из json-файла"),
                             ("replan", "убрать всё, что расставлено автоматически")):
@@ -401,6 +429,9 @@ def main():
             p.add_argument("--filter-tag", dest="filter_tag", help="только записи с этой меткой")
         if name in ("edit", "rm"):
             p.add_argument("--id", required=True)
+        if name in ("done", "undone"):
+            p.add_argument("--date", required=True, help="какой день, ДД.ММ.ГГГГ")
+            p.add_argument("--id", help="одно дело; без него — весь день")
         if name == "import":
             p.add_argument("--file", required=True,
                            help="json-список записей теми же полями, что у add")
@@ -441,6 +472,21 @@ def main():
             [] if args.replace else records) + fresh, args.local)
         print(f"залито записей: {len(fresh)}"
               + ("" if args.replace else f", всего стало {len(records) + len(fresh)}"))
+        return
+
+    if args.cmd in ("done", "undone"):
+        if not DATE_RE.match(args.date):
+            raise SystemExit("дата в формате ДД.ММ.ГГГГ")
+        chosen = [find(records, args.id)] if args.id else [
+            r for r in records if r.get("horizon", "time") == "time" and applies_on(r, args.date)]
+        if not chosen:
+            raise SystemExit(f"на {args.date} дел не нашлось")
+        for record in chosen:
+            marks = set(record.get("done") or [])
+            marks.add(args.date) if args.cmd == "done" else marks.discard(args.date)
+            record["done"] = sorted(marks)
+        save(key, salt, records, args.local)
+        print(f"{'отмечено' if args.cmd == 'done' else 'снято'} на {args.date}: {len(chosen)}")
         return
 
     if args.cmd == "add":

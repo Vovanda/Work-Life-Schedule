@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Хозяйство мамы · 3–8 сентября</title>
+<title>Расписание · Вова</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style"
@@ -28,13 +28,9 @@
     --blue-soft:#DCE9F2; --mint-soft:#BFE7D5; --pink-soft:#F8C9D9;
     --lav-soft:#DED6F3; --gold-soft:#F7CF8E; --grey-soft:#E4E8EE;
     --on-accent:#22333c; --on-now:#FFFFFF;
-    /* Подгруппы: 1-я синяя, 2-я мятная, общая пара — приглушённый серо-голубой.
-       Общие пары не должны спорить с подгруппами, поэтому их тон тише. */
-    --sg1:#7FC0E8; --sg2:#8FDCC0; --sg0:#C3CEDA; --sg-strength:38%; --sg0-strength:30%;
     /* поверхности и текст */
     --app-bg:#FBF7FA; --panel:#FFFFFF; --panel-2:#F7F2F8;
     --ink:#3A4A55; --muted:#8A97A0; --line:#EEE6EF;
-    --neutral-chip:#E8E2EC;
     /* шапка */
     --hero-a:#8FCEE6; --hero-b:#A9E0CC; --hero-c:#F3BBD0;
     --hero-ink:#24333C; --hero-veil:rgba(255,255,255,.5); --hero-veil-2:rgba(255,255,255,.75);
@@ -53,8 +49,6 @@
     --on-accent:#F3F7FA; --on-now:#2A1520;
     --app-bg:#16151F; --panel:#211F2E; --panel-2:#2A2740;
     --ink:#ECEAF6; --muted:#A69FC2; --line:#332F47;
-    --neutral-chip:#37324E;
-    --sg1:#3F7F9B; --sg2:#3E8A70; --sg0:#454E60; --sg-strength:46%; --sg0-strength:42%;
     --hero-a:#2C4358; --hero-b:#2B4A45; --hero-c:#4A2E44;
     --hero-ink:#EDEAF6; --hero-veil:rgba(255,255,255,.12); --hero-veil-2:rgba(255,255,255,.2);
     --hero-card:rgba(20,15,30,.35); --hero-card-line:rgba(255,255,255,.12);
@@ -109,7 +103,6 @@
   .pill,.wtag,.mabbr,.badge-now,.badge-next,.today-pill{
     box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 16%,transparent)}
   .pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;color:var(--on-accent);white-space:nowrap}
-  .pill.sg2{background:var(--sg2);color:var(--on-accent)}
 
   /* Если человек просил систему уменьшить анимацию — не двигаем ничего. */
   @media (prefers-reduced-motion: reduce){
@@ -215,8 +208,6 @@
   .seg button:hover{color:var(--ink)}
   .seg button.active{background:linear-gradient(90deg,var(--blue),var(--mint));color:var(--on-accent);
     box-shadow:0 1px 4px rgba(80,60,90,.14)}
-  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;margin:0}
-  .fgrid .side-field{margin:10px 0}
   .daterange{display:flex;align-items:center;gap:2px;background:var(--panel);
     border:1px solid var(--line);border-radius:9px;padding:4px 6px;height:34px}
   .daterange:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px color-mix(in srgb,var(--blue) 35%,transparent)}
@@ -226,18 +217,6 @@
     width:13px;height:13px}
   .dr-sep{color:var(--muted);font-size:11px;flex:none}
   /* мультивыбор преподавателей */
-  .multi{position:relative}
-  .multi-btn{text-align:left;cursor:pointer;padding-right:28px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238A97A0' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 10px center;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .multi-list{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:40;
-    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px;
-    max-height:240px;overflow-y:auto;box-shadow:0 14px 34px rgba(80,60,90,.18)}
-  .multi-list label{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;
-    font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;white-space:normal}
-  .multi-list label:hover{background:var(--panel-2)}
-  .multi-list input{accent-color:var(--blue);flex:none;margin:0}
   /* тот же сегментный тумблер, что и в меню, только на светлом фоне полосы */
   .seg-bar{flex:none;background:var(--panel);border:1px solid var(--line)}
   .seg-bar button{flex:none;padding:6px 14px}
@@ -303,8 +282,7 @@
     border:1px solid var(--line);color:var(--ink)}
   .wtag{font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:4px 10px;border-radius:999px;
     color:var(--on-accent);white-space:nowrap}
-  .wtag.even{background:var(--mint)} .wtag.odd{background:var(--pink)}
-  .wt-short{display:none}
+  .wtag.past{background:var(--mint)} .wtag.ahead{background:var(--pink)}
   .search{flex:1;min-width:190px;position:relative}
   .search .ic{position:absolute;left:10px;top:50%;transform:translateY(-50%);
     width:15px;height:15px;color:var(--muted);pointer-events:none}
@@ -346,7 +324,7 @@
      поэтому текст и плашки стоят на одной вертикали в любой строке. */
   .lesson{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);
     border-radius:14px;padding:12px 14px;box-shadow:0 2px 10px rgba(90,70,100,.05)}
-  .lesson::before,.cols .sgcol::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  .lesson::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
     background:var(--stripe,var(--line));z-index:1}
   .pair.now{background:color-mix(in srgb,var(--now) 7%,transparent);
     outline:2.5px solid var(--now);outline-offset:-2.5px}
@@ -357,36 +335,14 @@
   /* Сдвоенная пара — ОДНА карточка: половины разделены пунктиром, а не разъехались
      двумя плашками. Акцент у неё серо-голубой, цвета подгрупп живут внутри половин.
      Отступ слева тот же, что у одиночной карточки (1 + 14 = 15px). */
-  .lesson.group{background:var(--panel);padding:0;--stripe:var(--sg0)}
-  .lesson.group::before{display:block}
-  .cols{display:flex;gap:0;align-items:stretch}
   /* прижимаем к верху: при центрировании более короткая половина съезжала вниз
      и строки «время + подгруппа» переставали быть на одной линии */
-  .cols .sgcol{position:relative;flex:1 1 0;min-width:0;
-    display:flex;align-items:flex-start;padding:12px 14px}
-  .cols .sgcol::before{display:none}
-  .cols .sgcol + .sgcol{border-left:1.5px dashed color-mix(in srgb,var(--ink) 26%,transparent)}
-  .cols .sgcol .row{flex:1}
   /* время внутри карточки — когда у подгрупп оно разное; выглядит так же,
      как время слева, чтобы расписание читалось одним языком */
   .l-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-  .l-time{color:var(--muted);font-weight:700;font-size:12.5px;letter-spacing:.01em}
   /* заметка к занятию: свёрнута, раскрывается по клику */
-  .note{margin-top:6px;font-size:12px;color:var(--muted)}
-  .note summary{display:flex;align-items:center;gap:5px;cursor:pointer;
-    color:var(--blue-ink);list-style:none;min-width:0}
   /* в свёрнутом виде видно начало заметки, а не безликое «Заметка» */
   /* в свёрнутом виде — короткое начало, чтобы заметка не растягивалась на всю карточку */
-  .note-peek{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;
-    max-width:38ch;font-weight:600}
-  .note-label{display:none;font-weight:700}
-  .note[open] .note-peek{display:none}
-  .note[open] .note-label{display:inline}
-  .note-full{color:var(--muted)}
-  .note summary::-webkit-details-marker{display:none}
-  .note summary:hover{filter:brightness(1.1)}
-  .note[open] summary{margin-bottom:4px}
-  .note>div{line-height:1.45}
   .lesson .subj{font-family:"Fraunces",Georgia,serif,"Segoe UI Emoji","Apple Color Emoji";font-size:16px;font-weight:600;line-height:1.25}
   .lesson .meta{display:flex;flex-wrap:wrap;gap:7px 13px;margin-top:7px;color:var(--muted);font-size:13px;font-weight:500}
   .lesson .meta b{color:var(--ink);font-weight:600}
@@ -400,15 +356,8 @@
     overflow-wrap:anywhere}
   .room-side .rl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:2px}
   .pair.now .room-side{background:var(--now)} .pair.now .room-side .rm,.pair.now .room-side .rl{color:var(--on-now)}
-  .selfstudy{background:var(--mint-soft);border:1px dashed var(--mint);color:var(--mint-ink);
-    border-radius:14px;padding:13px 16px;font-weight:700}
   /* Сайт личный: чужая подгруппа отфильтрована в match() и до заливки не
      доходит. Остаются два состояния — моя пара (мятная) и общая (серо-голубая). */
-  .lesson.sgtint0,.cols .sgcol.sgtint0,.wk td.c.sgtint0,.mcell.sgtint0{
-    background:color-mix(in srgb,var(--sg0) var(--sg0-strength),var(--panel))}
-  .lesson.sgtint0{--stripe:var(--sg0)}
-  .lesson.sgtint2,.cols .sgcol.sgtint2,.wk td.c.sgtint2,.mcell.sgtint2{
-    background:color-mix(in srgb,var(--sg2) var(--sg-strength),var(--panel))}
   /* Карточка дела — на своём фоне: цвет несёт полоска категории слева, а не
      заливка. День с делами в сетке подкрашен слабо — чтобы пустые дни периода
      отличались от занятых, но цвет не спорил с плашками внутри. */
@@ -418,9 +367,6 @@
   /* А когда пары видны, ячейка уже покрашена по подгруппе. Мешать два цвета в
      градиент — каша, поэтому своё отмечается полосой по нижнему краю: она
      ложится поверх любой заливки и читается отдельно от неё. */
-  .wk td.c.has-mine,.mcell.has-mine{position:relative}
-  .wk td.c.has-mine::after,.mcell.has-mine::after{content:"";position:absolute;
-    left:0;right:0;bottom:0;height:3px;background:var(--pink-ink);opacity:.8}
 
   /* ==== ВИД: НЕДЕЛЯ =========================================================== */
   /* week grid */
@@ -431,8 +377,6 @@
   .wk td.tm b{display:block;color:var(--ink);font-size:13px}
   .wk td.c{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px;vertical-align:top}
   .wk td.c.now{border-color:var(--now);box-shadow:0 0 0 2px color-mix(in srgb,var(--now) 25%,transparent)}
-  .wk-self{font-size:15px;line-height:1.2;text-align:center;color:var(--mint-ink)}
-  .selfline{justify-content:center;font-size:14px;color:var(--mint-ink)}
   .wk td.tm.now{background:var(--now);border-radius:8px}
   .wk td.tm.now,.wk td.tm.now b{color:var(--on-now)}
   .wk td.tm.next{background:color-mix(in srgb,var(--blue) 22%,transparent);border-radius:8px}
@@ -472,13 +416,8 @@
     color:var(--ink);margin-top:2px}
   .msum i{width:8px;height:8px;border-radius:50%;background:var(--mint);flex:none}
   .mtime{color:var(--ink);font-weight:700;font-size:9.5px;min-width:28px;flex:none}
-  .mroom{color:var(--muted);font-weight:700;font-size:10px;overflow:hidden;text-overflow:ellipsis}
   /* Номер подгруппы у пары: в месяце фон клетки общий на весь день, поэтому
      принадлежность каждой пары показывает кружок, а не заливка. */
-  .msg{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;flex:none;
-    border-radius:50%;font-size:8.5px;font-weight:800;color:var(--on-accent)}
-  .msg.sg2{background:var(--sg2)}
-  .mine-mark{width:13px;height:13px;flex:none;vertical-align:-2px}
   /* Наложение по времени рисуется как сдвоенная пара: один блок, внутри
      пунктирная граница. Своё стоит сверху — оно приоритетнее. */
   .mstack{border:1.5px dashed color-mix(in srgb,var(--ink) 26%,transparent);
@@ -527,15 +466,9 @@
     color:var(--pink-ink)}
   .goal-flag.done{color:var(--mint-ink)}
   .goal-grown{font-size:11px;color:var(--muted)}
-  .pill.auto-pill{background:transparent;color:var(--muted);border:1px dashed var(--line)}
-  .lesson.task.auto{border-style:dashed}
   .lesson.task.clash{outline:2px solid var(--now);outline-offset:-2px}
-  .pill.mine-pill{display:inline-flex;align-items:center;gap:4px;
-    background:var(--pink-soft);color:var(--pink-ink)}
 
   /* ==== ЗАЛИВКА ПО ПОДГРУППАМ · общая ========================================= */
-  .sgtint0{--stripe:var(--sg0)}
-  .sgtint2{--stripe:var(--sg2)}
 
   /* ==== ЛИЧНЫЕ ЗАДАЧИ ========================================================== */
   /* Своя запись — та же .lesson: полоска слева через --stripe красит её по типу,
@@ -569,7 +502,6 @@
   /* сдвоенная пара в попапе выглядит так же, как в списке: одна карточка,
      половины вплотную, без белых краёв */
   .pop-body .lesson.group{padding:0}
-  .pop-body .cols .sgcol{padding:8px 10px}
   .pop-body .lesson .subj{font-size:13.5px;line-height:1.2}
   .pop-body .lesson .meta{gap:4px 10px;margin-top:4px;font-size:11.5px}
   .pop-body .pill{font-size:10px;padding:2px 7px}
@@ -577,18 +509,14 @@
   .pop-body .room-side{padding:4px 9px;border-radius:10px}
   .pop-body .room-side .rm{font-size:15px}
   .pop-body .room-side .rl{display:none}
-  .pop-body .selfstudy{padding:10px 12px;font-size:13px}
 
   /* ==== ГАЛОЧКА И ПРОГРЕСС ДНЯ ================================================
      Отметка «сделано» — единственное действие на странице, поэтому она крупная
      и стоит слева от текста: во дворе в неё надо попадать пальцем не глядя. */
-  .check{flex:none;width:26px;height:26px;border-radius:9px;padding:0;cursor:pointer;
+  .check{flex:none;width:26px;height:26px;border-radius:9px;
     background:var(--panel-2);border:2px solid color-mix(in srgb,var(--ink) 22%,transparent);
-    color:var(--muted);display:grid;place-items:center;
-    transition:background .15s,border-color .15s,color .15s,transform .1s}
-  .check:hover{border-color:var(--mint-ink)}
-  .check:active{transform:scale(.9)}
-  .check .ic{width:15px;height:15px;stroke-width:3;opacity:0;transition:opacity .15s}
+    color:var(--muted);display:grid;place-items:center}
+  .check .ic{width:15px;height:15px;stroke-width:3;opacity:0}
   .lesson.is-done .check{background:var(--mint);border-color:var(--mint);color:var(--mint-ink)}
   .lesson.is-done .check .ic{opacity:1}
   /* Сделанное не исчезает и не уезжает: строка остаётся на своём месте в порядке
@@ -619,16 +547,12 @@
   .linkbtn:hover{color:var(--now)}
   .legend-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
   .legend{padding:8px 0 2px;min-width:0}
-  .png-btn{flex:none;width:auto;margin-top:8px;white-space:nowrap}
   @media(max-width:640px){
     .legend-row{flex-direction:column;gap:6px}
     .png-btn{margin-top:0;align-self:flex-start}
   }
   .lg-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
   .lg-row+.lg-row{margin-top:5px}
-  .lg-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;
-    text-transform:uppercase}
-  .lg i.fill{width:16px;height:12px;border-radius:4px;border:1px solid var(--line)}
   .lg{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
   .lg i{width:12px;height:12px;border-radius:50%;display:inline-block}
   .lg i.ring{background:transparent!important;border:2px solid var(--gold)}
@@ -637,13 +561,7 @@
 
   /* ==== АДАПТИВ · узкие экраны ================================================ */
   @media(max-width:1023px){ .weekpick{max-width:none} }
-  @media(max-width:640px){ .wt-full{display:none} .wt-short{display:inline} }
   @media(max-width:1023px){ .seg-bar{display:none!important} }
-  @media(max-width:680px){
-    .cols{flex-direction:column}
-    .cols .sgcol + .sgcol{border-left:0;
-      border-top:1.5px dashed color-mix(in srgb,var(--ink) 26%,transparent)}
-  }
   /* Телефон: попап во весь экран и максимально плотно, чтобы день
      помещался по высоте без прокрутки. Подгруппы остаются в две колонки —
      если их складывать друг под друга, высота удваивается. */
@@ -654,7 +572,6 @@
     .pop-body .pair{grid-template-columns:42px 1fr;gap:7px;padding:5px 6px}
     .pop-body .pair-time{font-size:10px}
     .pop-body .pair-time .n{font-size:12px}
-    .pop-body .cols{flex-direction:row}
     .pop-body .cols .sgcol{padding:6px 7px}
     .pop-body .lesson{padding:6px 8px}
     .pop-body .lesson .subj{font-size:12px;line-height:1.15}
@@ -692,7 +609,7 @@
 <!-- ==== ЭКРАН ПАРОЛЯ ==== -->
 <div id="gate" class="gate" hidden>
   <form id="gateForm" class="gate-card">
-    <h1 class="font-display">Хозяйство мамы</h1>
+    <h1 class="font-display">Расписание</h1>
     <p>Личная страница. Введите пароль, чтобы войти.</p>
     <input id="gateInput" class="ctl" type="password" placeholder="Пароль" autocomplete="current-password" autofocus />
     <button class="side-btn active" type="submit">Войти</button>
@@ -947,9 +864,9 @@ document.getElementById('gateForm').addEventListener('submit', async e => {
   <header class="ribbon">
     <div class="wrap inner">
       <div>
-        <div class="eyebrow">мама на Алтае · 3–8 сентября</div>
+        <div class="eyebrow">этап: хозяйство мамы · 3–8 сентября</div>
         <div class="h1row">
-          <h1 class="font-display">Хозяйство мамы</h1>
+          <h1 class="font-display">Расписание</h1>
           <button id="theme" class="theme-btn" title="Тема оформления" aria-label="Тема оформления"><svg class="ic" aria-hidden="true"><use href="#i-auto"/></svg></button>
         </div>
         <div class="sub" id="range-sub"></div>
@@ -962,7 +879,7 @@ document.getElementById('gateForm').addEventListener('submit', async e => {
   <aside id="sidebar">
     <div class="side-head">
       <span class="dot"><svg class="ic" aria-hidden="true"><use href="#i-flower"/></svg></span>
-      <span class="side-title">Хозяйство мамы</span>
+      <span class="side-title">Расписание</span>
       <button id="theme2" class="wnav" title="Тема оформления" aria-label="Тема оформления"><svg class="ic" aria-hidden="true"><use href="#i-auto"/></svg></button>
     </div>
     <div class="side-body">
@@ -1075,19 +992,11 @@ let DATA=null, DATE_MAP={}, MONTHS=[], SUGG=[];
 let st={view:"list",cur:0,scope:"sem",from:"",to:"",term:"",fDay:"",fType:"",pop:null,
   theme:"auto",side:"right",monthPtr:0,fTag:""};
 
-/* Отметки «сделано» — единственное, что сайт пишет сам. Они про один день и про
-   одно устройство: это не данные хозяйства, а галочки того, кто сейчас его ведёт,
-   поэтому лежат в браузере, а не в зашифрованных файлах. */
-const DONE_KEY="hh_done_v1";
-let DONE={};
-function loadDone(){try{DONE=JSON.parse(localStorage.getItem(DONE_KEY)||"{}");}catch{DONE={};}}
-const doneKeyOf=r=>r.date+"|"+(r.id||r.subject);
-const isDone=r=>!!DONE[doneKeyOf(r)];
-function toggleDoneKey(key){
-  if(DONE[key])delete DONE[key];else DONE[key]=1;
-  localStorage.setItem(DONE_KEY,JSON.stringify(DONE));
-  render();
-}
+/* Сделанное лежит в самих делах: у повтора одна запись на все шесть дней, поэтому
+   отметка — список дат, а не флаг. Ставит её `tools/vault.py done`, а не страница:
+   сайт статический, и отметка, поставленная в браузере, осталась бы в этом
+   браузере — ни с телефона, ни из утилиты её потом не видно. */
+const isDone=r=>(r.done||[]).includes(r.date);
 const mq=window.matchMedia("(prefers-color-scheme: dark)");
 
 /* ==== УТИЛИТЫ =============================================================== */
@@ -1103,10 +1012,6 @@ function pdate(s){const m=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(s||"");return m?new 
 function keyOf(d){return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();}
 function sameDay(a,b){return a&&b&&a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();}
 function eod(d){const x=new Date(d);x.setHours(23,59,59,999);return x;}
-const STOP=new Set(["в","и","по","на","с","о","для","к","от","до","при","за","из","под"]);
-function abbr(s){s=s||"";const w=s.split(/[\s\-–]+/).filter(x=>x&&!STOP.has(x.toLowerCase()));
-  let a=w.filter(x=>/[А-Яа-яA-Za-z]/.test(x)).map(x=>x[0].toUpperCase()).join("");
-  if(a.length<2)a=s.replace(/\s/g,"").slice(0,3).toUpperCase();return a.slice(0,4);}
 function centerToday(){requestAnimationFrame(()=>{
   const cont=$("content").querySelector(".hscroll");const el=$("content").querySelector(".today");
   if(!cont||!el)return;const cr=cont.getBoundingClientRect(),er=el.getBoundingClientRect();
@@ -1320,15 +1225,6 @@ function markClass(r){
 /* ==== ОТРИСОВКА · кирпичики карточки ======================================== */
 // Фильтры считаются включёнными, когда сужен состав дел, а не период показа.
 function filtersOn(){return !!(st.term||st.fType||st.fTag);}
-/* Список включённых фильтров словами — подпись над расписанием: должно быть
-   видно, что показаны не все дела. */
-function filterSummary(){
-  const parts=[];
-  if(st.fType)parts.push(st.fType);
-  if(st.fTag)parts.push("#"+st.fTag);
-  if(st.term)parts.push("поиск «"+st.term+"»");
-  return parts.join(" · ");
-}
 // Компактный чип для недели и месяца — те же классы, что у пар, поэтому под
 // сетку не нужно ни одного нового CSS-правила.
 function myChipHTML(r,clash){
@@ -1352,8 +1248,8 @@ function myCardHTML(r,clash){
   const note=r.note?`<div class="meta">${hl(r.note)}</div>`:"";
   const where=r.room?`<div class="room-side"><div class="rm"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> ${hl(r.room)}</div><div class="rl">место</div></div>`:"";
   const check=isTimed(r)
-    ? `<button type="button" class="check" data-done="${esc(doneKeyOf(r))}" aria-pressed="${done}" `
-      +`title="${done?"Сделано":"Отметить сделанным"}"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></button>`
+    ? `<span class="check" role="img" aria-label="${done?"сделано":"не сделано"}" `
+      +`title="${done?"Сделано":"Ещё не сделано"}"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>`
     : "";
   return `<div class="lesson task${clash?" clash":""}${done?" is-done":""}" style="--stripe:${cat.color}">
     <div class="row">
@@ -1711,7 +1607,7 @@ function fillPicker(){
     // была понятием расписания вуза, а здесь считается совсем другое.
     const left=w.days.filter(d=>inPeriod(d._dt)&&eod(d._dt)>=new Date()).length;
     tag.hidden=false;
-    tag.className="wtag "+(left?"odd":"even");
+    tag.className="wtag "+(left?"ahead":"past");
     tag.textContent=left?plural(left,"день","дня","дней")+" впереди":"позади";
     // Показано может быть несколько недель — подпись говорит про то, что открыто,
     // а не про ту неделю, что стоит в селекторе.
@@ -1840,7 +1736,6 @@ function save(){localStorage.setItem(KEY,JSON.stringify(st));hashWrite();}
 function load(){
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}");}catch{return{};}})();
   Object.keys(saved).forEach(k=>{ if(saved[k]!==undefined&&k in st)st[k]=saved[k]; });
-  loadDone();
 }
 
 /* ==== ПОДСКАЗКИ ПОИСКА ====================================================== */
@@ -2000,11 +1895,7 @@ function bindShare(){
 
 /* Клики по сетке недели и месяца. */
 function bindGrid(){
-  // Галочка стоит внутри клетки сетки, поэтому её клик перехватывается первым:
-  // отметить сделанное и открыть день — разные намерения.
   const onClick=e=>{
-    const box=e.target.closest("[data-done]");
-    if(box){e.stopPropagation();toggleDoneKey(box.dataset.done);return;}
     const cell=e.target.closest("[data-day]");
     if(cell){openDay(+cell.dataset.week,+cell.dataset.day);}
   };
