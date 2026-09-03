@@ -57,7 +57,6 @@ TYPES = ("Кормёжка", "Вода", "Выгул", "Дойка", "Двор",
 
 # Горизонт — насколько точно дело привязано ко времени. Подробности в docs/model.md.
 HORIZONS = ("time", "day", "week", "month", "season")
-PLACED = ("me", "auto")
 
 # Повторяющееся дело хранится одним фрагментом с правилом, а не тридцатью
 # одинаковыми записями: сдвинуть дойку на час — одна правка, а не шесть.
@@ -262,7 +261,6 @@ def build(args, prev=None):
     record = {
         "id": prev.get("id") or str(uuid.uuid4()),
         "horizon": guess_horizon(args, prev),
-        "placed": args.placed or prev.get("placed", "me"),
         "parent": args.parent if args.parent is not None else prev.get("parent", ""),
         "period": args.period if args.period is not None else prev.get("period", ""),
         "date": args.date if args.date is not None else prev.get("date", ""),
@@ -286,8 +284,6 @@ def build(args, prev=None):
     horizon = record["horizon"]
     if horizon not in HORIZONS:
         raise SystemExit(f"горизонт один из: {', '.join(HORIZONS)}")
-    if record["placed"] not in PLACED:
-        raise SystemExit(f"placed один из: {', '.join(PLACED)}")
     if horizon in ("time", "day"):
         if not record["date"]:
             raise SystemExit(f"при горизонте {horizon} нужна --date")
@@ -330,8 +326,7 @@ def show(records):
                 when += f", кроме {', '.join(record['skip'])}"
             if record.get("move"):
                 when += ", перенос " + ", ".join(f"{a}→{b}" for a, b in record["move"].items())
-        auto = " ~" if record.get("placed") == "auto" else "  "
-        print(f"{record.get('date') or '..........'}{auto}{when}  {record['subject']}"
+        print(f"{record.get('date') or '..........'}  {when}  {record['subject']}"
               f"  [{record.get('type', '')}]{who}{where}  ({record['id'][:8]})")
         if record.get("tags"):
             print("      " + " ".join("#" + t for t in record["tags"]))
@@ -343,7 +338,7 @@ def show(records):
 # набором, что и разбор командной строки, поэтому расходиться им негде.
 BLANK = {"subject": None, "date": None, "time": None, "duration": None, "type": None,
          "room": None, "note": None, "tag": None, "horizon": None, "period": None,
-         "placed": None, "parent": None, "repeat": None, "until": None,
+         "parent": None, "repeat": None, "until": None,
          "skip": None, "move": None}
 
 
@@ -404,8 +399,6 @@ def main():
         p.add_argument("--horizon", choices=HORIZONS,
                        help="точность: time, day, week, month, season. Обычно понятен сам")
         p.add_argument("--period", help="границы для week и month: ДД.ММ.ГГГГ-ДД.ММ.ГГГГ")
-        p.add_argument("--placed", choices=PLACED,
-                       help="me — время выбрано владельцем, auto — предложено ассистентом")
         p.add_argument("--parent", help="id дела, из которого это выросло")
         p.add_argument("--repeat", help="дни недели через запятую: пн,вт,ср,чт,пт,сб,вс")
         p.add_argument("--until", help="до какой даты повторять, ДД.ММ.ГГГГ")
@@ -416,13 +409,12 @@ def main():
     for name, help_text in (("list", "показать записи"), ("add", "добавить"),
                             ("done", "отметить сделанным"), ("undone", "снять отметку"),
                             ("edit", "изменить"), ("rm", "удалить"),
-                            ("import", "залить распорядок из json-файла"),
-                            ("replan", "убрать всё, что расставлено автоматически")):
+                            ("import", "залить распорядок из json-файла")):
         p = sub.add_parser(name, help=help_text)
         p.add_argument("--password", help="иначе SCHEDULE_PASSWORD, .env или спросим")
         p.add_argument("--local", action="store_true",
                        help="локальный слой: видно только на своей машине, в git не уедет")
-        if name in ("list", "replan"):
+        if name == "list":
             p.add_argument("--from", dest="date_from", help="с этой даты")
             p.add_argument("--to", dest="date_to", help="по эту дату")
         if name == "list":
@@ -503,26 +495,6 @@ def main():
         print(f"изменена {record['id'][:8]} — {record['subject']}")
         return
 
-    if args.cmd == "replan":
-        # Своё время владельца неприкосновенно: убираем только предложенное.
-        def day_key(text):
-            day, month, year = (text.split(".") + ["", "", ""])[:3]
-            return (year, month, day)
-
-        doomed = [r for r in records if r.get("placed") == "auto"]
-        if args.date_from:
-            doomed = [r for r in doomed if day_key(r.get("date", "")) >= day_key(args.date_from)]
-        if args.date_to:
-            doomed = [r for r in doomed if day_key(r.get("date", "")) <= day_key(args.date_to)]
-        if not doomed:
-            print("нечего пересобирать: автоматически расставленного нет")
-            return
-        left = [r for r in records if r not in doomed]
-        save(key, salt, left, args.local)
-        print(f"убрано автоматически расставленных: {len(doomed)}")
-        for r in doomed:
-            print(f"  {r.get('date') or '..........'}  {r['subject']}")
-        return
 
     if args.cmd == "rm":
         record = find(records, args.id)

@@ -8,3 +8,7 @@
 .playwright-mcp/
 __pycache__/
 *.pyc
+
+# playwright для tools/smoke.mjs: ставится разово, в репозиторий не уезжает
+node_modules/
+package*.json

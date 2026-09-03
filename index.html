@@ -310,11 +310,11 @@
   .weekhead .day-date{font-size:13px}
   /* Отступы одинаковые у всех строк — иначе «сейчас/ближайшая» сдвигали колонки.
      Рамка у них рисуется через outline: он не занимает места в раскладке. */
-  .pair{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:10px 12px;
+  .entry{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:10px 12px;
     border-top:1px solid var(--line);border-radius:16px}
-  .pair:first-of-type{border-top:0}
-  .pair-time{color:var(--muted);font-weight:600;font-size:13px;line-height:1.45}
-  .pair-time .n{display:block;color:var(--ink);font-size:15px;font-weight:700}
+  .entry:first-of-type{border-top:0}
+  .entry-time{color:var(--muted);font-weight:600;font-size:13px;line-height:1.45}
+  .entry-time .n{display:block;color:var(--ink);font-size:15px;font-weight:700}
   .badge-now,.badge-next{display:inline-block;margin-top:5px;font-size:10px;font-weight:700;
     padding:2px 7px;border-radius:999px}
   .badge-now{background:var(--now);color:var(--on-now)}
@@ -322,15 +322,15 @@
   .stack{display:flex;flex-direction:column;gap:10px}
   /* Полоска подгруппы — накладкой, а не рамкой: рамка у всех карточек одинаковая 1px,
      поэтому текст и плашки стоят на одной вертикали в любой строке. */
-  .lesson{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);
+  .card{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);
     border-radius:14px;padding:12px 14px;box-shadow:0 2px 10px rgba(90,70,100,.05)}
-  .lesson::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
     background:var(--stripe,var(--line));z-index:1}
-  .pair.now{background:color-mix(in srgb,var(--now) 7%,transparent);
+  .entry.now{background:color-mix(in srgb,var(--now) 7%,transparent);
     outline:2.5px solid var(--now);outline-offset:-2.5px}
-  .pair.next{background:color-mix(in srgb,var(--blue) 7%,transparent);
+  .entry.next{background:color-mix(in srgb,var(--blue) 7%,transparent);
     outline:2.5px dashed var(--blue);outline-offset:-2.5px}
-  .pair.now .lesson,.pair.next .lesson{box-shadow:none}
+  .entry.now .card,.entry.next .card{box-shadow:none}
   /* пара на две подгруппы: 1-я — голубая секция, 2-я — мятная */
   /* Сдвоенная пара — ОДНА карточка: половины разделены пунктиром, а не разъехались
      двумя плашками. Акцент у неё серо-голубой, цвета подгрупп живут внутри половин.
@@ -343,10 +343,10 @@
   /* заметка к занятию: свёрнута, раскрывается по клику */
   /* в свёрнутом виде видно начало заметки, а не безликое «Заметка» */
   /* в свёрнутом виде — короткое начало, чтобы заметка не растягивалась на всю карточку */
-  .lesson .subj{font-family:"Fraunces",Georgia,serif,"Segoe UI Emoji","Apple Color Emoji";font-size:16px;font-weight:600;line-height:1.25}
-  .lesson .meta{display:flex;flex-wrap:wrap;gap:7px 13px;margin-top:7px;color:var(--muted);font-size:13px;font-weight:500}
-  .lesson .meta b{color:var(--ink);font-weight:600}
-  .lesson .meta .ic{color:var(--muted)}
+  .card .subj{font-family:"Fraunces",Georgia,serif,"Segoe UI Emoji","Apple Color Emoji";font-size:16px;font-weight:600;line-height:1.25}
+  .card .meta{display:flex;flex-wrap:wrap;gap:7px 13px;margin-top:7px;color:var(--muted);font-size:13px;font-weight:500}
+  .card .meta b{color:var(--ink);font-weight:600}
+  .card .meta .ic{color:var(--muted)}
   .row{display:flex;gap:14px;align-items:center}
   .linfo{flex:1;min-width:0}
   .room-side{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
@@ -355,14 +355,14 @@
     font-weight:700;color:var(--ink);font-family:"Fraunces",serif;line-height:1.2;
     overflow-wrap:anywhere}
   .room-side .rl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:2px}
-  .pair.now .room-side{background:var(--now)} .pair.now .room-side .rm,.pair.now .room-side .rl{color:var(--on-now)}
+  .entry.now .room-side{background:var(--now)} .entry.now .room-side .rm,.entry.now .room-side .rl{color:var(--on-now)}
   /* Сайт личный: чужая подгруппа отфильтрована в match() и до заливки не
      доходит. Остаются два состояния — моя пара (мятная) и общая (серо-голубая). */
   /* Карточка дела — на своём фоне: цвет несёт полоска категории слева, а не
      заливка. День с делами в сетке подкрашен слабо — чтобы пустые дни периода
      отличались от занятых, но цвет не спорил с плашками внутри. */
-  .lesson.task{background:var(--panel)}
-  .wk td.c.mine-tint,.mcell.mine-tint{
+  .card{background:var(--panel)}
+  .wk td.c.has-work,.mcell.has-work{
     background:color-mix(in srgb,var(--blue) 12%,var(--panel))}
   /* А когда пары видны, ячейка уже покрашена по подгруппе. Мешать два цвета в
      градиент — каша, поэтому своё отмечается полосой по нижнему краю: она
@@ -466,12 +466,12 @@
     color:var(--pink-ink)}
   .goal-flag.done{color:var(--mint-ink)}
   .goal-grown{font-size:11px;color:var(--muted)}
-  .lesson.task.clash{outline:2px solid var(--now);outline-offset:-2px}
+  .card.clash{outline:2px solid var(--now);outline-offset:-2px}
 
   /* ==== ЗАЛИВКА ПО ПОДГРУППАМ · общая ========================================= */
 
   /* ==== ЛИЧНЫЕ ЗАДАЧИ ========================================================== */
-  /* Своя запись — та же .lesson: полоска слева через --stripe красит её по типу,
+  /* Своя запись — та же .card: полоска слева через --stripe красит её по типу,
      а розовая заливка выше говорит, что запись моя, а не из расписания группы. */
 
   /* ==== ПОПАП ДНЯ ============================================================= */
@@ -494,16 +494,16 @@
   .pop-body .day-head{display:none}
   /* внутри попапа всё компактнее, чтобы день целиком помещался и на телефоне */
   /* отступы одинаковые у всех строк, иначе «сейчас/ближайшая» съезжает вбок */
-  .pop-body .pair{grid-template-columns:52px 1fr;gap:10px;padding:7px 9px}
-  .pop-body .pair-time{font-size:11px;display:block}
-  .pop-body .pair-time .n{font-size:13px}
+  .pop-body .entry{grid-template-columns:52px 1fr;gap:10px;padding:7px 9px}
+  .pop-body .entry-time{font-size:11px;display:block}
+  .pop-body .entry-time .n{font-size:13px}
   .pop-body .badge-now,.pop-body .badge-next{margin-top:3px;padding:1px 6px}
-  .pop-body .lesson{padding:8px 10px;border-radius:12px;box-shadow:none}
+  .pop-body .card{padding:8px 10px;border-radius:12px;box-shadow:none}
   /* сдвоенная пара в попапе выглядит так же, как в списке: одна карточка,
      половины вплотную, без белых краёв */
-  .pop-body .lesson.group{padding:0}
-  .pop-body .lesson .subj{font-size:13.5px;line-height:1.2}
-  .pop-body .lesson .meta{gap:4px 10px;margin-top:4px;font-size:11.5px}
+  .pop-body .card.group{padding:0}
+  .pop-body .card .subj{font-size:13.5px;line-height:1.2}
+  .pop-body .card .meta{gap:4px 10px;margin-top:4px;font-size:11.5px}
   .pop-body .pill{font-size:10px;padding:2px 7px}
   .pop-body .row{gap:8px}
   .pop-body .room-side{padding:4px 9px;border-radius:10px}
@@ -517,13 +517,13 @@
     background:var(--panel-2);border:2px solid color-mix(in srgb,var(--ink) 22%,transparent);
     color:var(--muted);display:grid;place-items:center}
   .check .ic{width:15px;height:15px;stroke-width:3;opacity:0}
-  .lesson.is-done .check{background:var(--mint);border-color:var(--mint);color:var(--mint-ink)}
-  .lesson.is-done .check .ic{opacity:1}
+  .card.is-done .check{background:var(--mint);border-color:var(--mint);color:var(--mint-ink)}
+  .card.is-done .check .ic{opacity:1}
   /* Сделанное не исчезает и не уезжает: строка остаётся на своём месте в порядке
      дня, только гаснет. Иначе список прыгает под рукой при каждой галочке. */
-  .pair.done .lesson{opacity:.5}
-  .pair.done .subj{text-decoration:line-through}
-  .pair.done .pair-time{opacity:.5}
+  .entry.done .card{opacity:.5}
+  .entry.done .subj{text-decoration:line-through}
+  .entry.done .entry-time{opacity:.5}
   .mline.chip-done{opacity:.42}
   .mline.chip-done .mabbr{filter:grayscale(.5)}
   .day-count{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);
@@ -555,13 +555,13 @@
     .pop{padding:0}
     .pop-card{width:100%;height:100%;max-height:100%;border-radius:0;border:0}
     .pop-body{padding:0 8px 10px}
-    .pop-body .pair{grid-template-columns:42px 1fr;gap:7px;padding:5px 6px}
-    .pop-body .pair-time{font-size:10px}
-    .pop-body .pair-time .n{font-size:12px}
+    .pop-body .entry{grid-template-columns:42px 1fr;gap:7px;padding:5px 6px}
+    .pop-body .entry-time{font-size:10px}
+    .pop-body .entry-time .n{font-size:12px}
     .pop-body .cols .sgcol{padding:6px 7px}
-    .pop-body .lesson{padding:6px 8px}
-    .pop-body .lesson .subj{font-size:12px;line-height:1.15}
-    .pop-body .lesson .meta{font-size:10.5px;gap:3px 7px;margin-top:3px}
+    .pop-body .card{padding:6px 8px}
+    .pop-body .card .subj{font-size:12px;line-height:1.15}
+    .pop-body .card .meta{font-size:10.5px;gap:3px 7px;margin-top:3px}
     .pop-body .pill{font-size:9.5px;padding:1px 6px}
     .pop-body .row{flex-direction:column;align-items:flex-start;gap:4px}
     /* аудитория строкой, а не крупной плашкой — она съедала половину ширины */
@@ -582,11 +582,11 @@
     .mgrid .mcell.quiet{padding:4px 2px}
   }
   @media(max-width:640px){
-    .pair{grid-template-columns:1fr;gap:5px}
+    .entry{grid-template-columns:1fr;gap:5px}
     /* колонка времени схлопывается в строку — время осталось бы дважды подряд,
        поэтому слева оставляем только номер пары, время читается в карточке */
-    .pair-time{display:flex;gap:8px;align-items:baseline}
-    .pair-time .t{display:none}
+    .entry-time{display:flex;gap:8px;align-items:baseline}
+    .entry-time .t{display:none}
     .wk td.tm{width:44px}
   }
 </style>
@@ -638,9 +638,9 @@ function showGate(){
 // могут уехать в прод. Нет их — работаем с боевыми.
 const LOCAL_RUN = ['localhost','127.0.0.1'].includes(location.hostname);
 const INDEX_URL = 'index.json';
-const MINE_URL = 'my-data.json';
+const DATA_URL = 'my-data.json';
 const LOCAL_INDEX_URL = 'index.local.json';
-const LOCAL_MINE_URL = 'my-data.local.json';
+const LOCAL_DATA_URL = 'my-data.local.json';
 const SESSION_KEY = 'schedule.key';
 const SESSION_SALT = 'schedule.salt';
 let cryptoKey = null;
@@ -650,9 +650,9 @@ let cryptoKey = null;
 // перевыпустили с другой солью) — форму покажет проверка при запуске.
 if (!localStorage.getItem(SESSION_KEY)) showGate();
 
-let MY_INDEX = null;      // [{d:"ДД.ММ.ГГГГ", p:"3", i:12}, ...]
-let MY_ITEMS = null;      // сырые фрагменты, расшифровываем по требованию
-const MY_CACHE = new Map();
+let RECORD_INDEX = null;      // [{d:"ДД.ММ.ГГГГ", p:"3", i:12}, ...]
+let FRAGMENTS = null;      // сырые фрагменты, расшифровываем по требованию
+const RECORD_CACHE = new Map();
 
 const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const unb64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
@@ -713,7 +713,7 @@ async function restoreKey(){
   const index = await fetchJSON(INDEX_URL);
   // Файлы перевыпустили с другой солью — старый ключ к ним уже не подойдёт.
   if (index && index.salt !== localStorage.getItem(SESSION_SALT)) return false;
-  return openMine(index);
+  return openVault(index);
 }
 
 // Вход: хэш пускает внутрь, ключ выводится из того же пароля и соли индекса.
@@ -722,33 +722,33 @@ async function unlock(password){
   const salt = index ? index.salt : b64(crypto.getRandomValues(new Uint8Array(16)));
   cryptoKey = await deriveKey(password, unb64(salt));
   await rememberKey(salt);
-  return openMine(index);
+  return openVault(index);
 }
 
 // Нет файлов — просто нет личных записей: сайт остаётся расписанием группы.
-async function openMine(index){
-  MY_INDEX = null; MY_ITEMS = null; MY_CACHE.clear();
+async function openVault(index){
+  RECORD_INDEX = null; FRAGMENTS = null; RECORD_CACHE.clear();
   if (!index || !index.index) return true;
   try{
-    MY_INDEX = await decryptIndex(index.index);
+    RECORD_INDEX = await decryptIndex(index.index);
   }catch(e){
     console.error('Индекс не расшифровался:', e);
     return true;
   }
-  const mine = await fetchJSON(MINE_URL);
-  MY_ITEMS = mine && Array.isArray(mine.items) ? mine.items : [];
+  const mine = await fetchJSON(DATA_URL);
+  FRAGMENTS = mine && Array.isArray(mine.items) ? mine.items : [];
 
   // Локальный слой дополняет боевой, а не подменяет: у него та же соль, значит
   // тот же ключ, и фрагменты просто дописываются в хвост со сдвигом позиций.
   if (LOCAL_RUN) {
     const localIndex = await fetchJSON(LOCAL_INDEX_URL);
-    const localMine = localIndex && await fetchJSON(LOCAL_MINE_URL);
+    const localMine = localIndex && await fetchJSON(LOCAL_DATA_URL);
     if (localIndex && localMine && Array.isArray(localMine.items)) {
       try{
-        const offset = MY_ITEMS.length;
+        const offset = FRAGMENTS.length;
         const entries = await decryptIndex(localIndex.index);
-        MY_ITEMS = MY_ITEMS.concat(localMine.items);
-        MY_INDEX = MY_INDEX.concat(entries.map(e=>({...e, i:e.i+offset})))
+        FRAGMENTS = FRAGMENTS.concat(localMine.items);
+        RECORD_INDEX = RECORD_INDEX.concat(entries.map(e=>({...e, i:e.i+offset})))
           .sort((a,b)=>dateKey(a.d).localeCompare(dateKey(b.d))||String(a.p).localeCompare(String(b.p)));
       }catch(e){
         console.warn('Локальный слой не открылся тем же ключом:', e);
@@ -1016,7 +1016,7 @@ function buildSkeleton(){
     const days=[];
     for(let di=0;di<7;di++){
       const d=new Date(cur); d.setDate(d.getDate()+di);
-      days.push({day:DAYS[di],date:d.toLocaleDateString("ru-RU"),pairs:[]});
+      days.push({day:DAYS[di],date:d.toLocaleDateString("ru-RU")});
     }
     weeks.push({days});
   }
@@ -1068,7 +1068,7 @@ function todayWeek(){const now=new Date();for(let i=0;i<DATA.weeks.length;i++){c
    Берём из файла только показанный отрезок: индекс отсортирован, поэтому нужные
    записи лежат подряд. Расшифрованное оседает в кэше — перелистывание недель
    туда-обратно не повторяет работу. */
-const MY_TYPE={
+const CATEGORY={
   "Кормёжка":{label:"Кормёжка",color:"var(--gold)"},
   "Вода":{label:"Вода",color:"var(--blue)"},
   "Выгул":{label:"Выгул",color:"var(--mint)"},
@@ -1076,16 +1076,16 @@ const MY_TYPE={
   "Двор":{label:"Двор",color:"var(--grey-soft)"},
   "Своё":{label:"Своё",color:"var(--pink)"},
 };
-let MY=[];   // записи показанного отрезка
+let RECORDS=[];   // записи показанного отрезка
 
 // "ДД.ММ.ГГГГ" -> "ГГГГММДД": такие строки сравниваются как даты.
 function dateKey(ru){const m=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(ru||"");return m?m[3]+m[2]+m[1]:"";}
 
-async function loadMine(fromRu,toRu){
-  MY=[];
-  if(!MY_INDEX||!MY_ITEMS)return;
+async function loadRecords(fromRu,toRu){
+  RECORDS=[];
+  if(!RECORD_INDEX||!FRAGMENTS)return;
   const from=dateKey(fromRu), to=dateKey(toRu);
-  for(const entry of MY_INDEX){
+  for(const entry of RECORD_INDEX){
     const key=dateKey(entry.d);
     // Бессрочные дела и правила повторения не привязаны к окну: первое должно
     // быть видно всегда, второе начинается раньше показанного отрезка, но
@@ -1096,15 +1096,15 @@ async function loadMine(fromRu,toRu){
       if(key<from)continue;
       if(key>to)break;                     // дальше только более поздние
     }
-    let record=MY_CACHE.get(entry.i);
+    let record=RECORD_CACHE.get(entry.i);
     if(record===undefined){
-      try{ record=await decryptFragment(MY_ITEMS[entry.i]); }
+      try{ record=await decryptFragment(FRAGMENTS[entry.i]); }
       catch(e){ console.error("Фрагмент",entry.i,"не расшифровался:",e); record=null; }
-      MY_CACHE.set(entry.i,record);
+      RECORD_CACHE.set(entry.i,record);
     }
     if(!record)continue;
-    if(record.repeat)MY.push(...expandRepeat(record,fromRu,toRu));
-    else MY.push(record);
+    if(record.repeat)RECORDS.push(...expandRepeat(record,fromRu,toRu));
+    else RECORDS.push(record);
   }
 }
 
@@ -1142,26 +1142,26 @@ function ruToDate(ru){
   return m?new Date(Number(m[3]),Number(m[2])-1,Number(m[1])):null;
 }
 // У дела есть только время: номеров пар в хозяйстве нет.
-function myTime(r){return r.time||"";}
-function myMatch(r){
+function recordTime(r){return r.time||"";}
+function recordMatches(r){
   const hay=(r.subject+" "+(r.note||"")+" "+(r.teacher||"")+" "+(r.tags||[]).join(" ")).toLowerCase();
   return hay.includes(st.term);
 }
 // Все метки, что встречаются в показанном отрезке — из них собирается фильтр.
-function myTags(){
+function allTags(){
   const seen=new Set();
-  MY.forEach(r=>(r.tags||[]).forEach(t=>seen.add(t)));
+  RECORDS.forEach(r=>(r.tags||[]).forEach(t=>seen.add(t)));
   return [...seen].sort((a,b)=>a.localeCompare(b,"ru"));
 }
 // В сетку и в день попадают только дела с датой. Недельные, месячные и
 // бессрочные показываются отдельно — им негде стоять на оси времени.
 function isDated(r){return (r.horizon||"time")==="time"||(r.horizon||"time")==="day";}
 function isTimed(r){return (r.horizon||"time")==="time";}
-function myForRu(ru){
-  return MY.filter(r=>isDated(r)&&r.date===ru)
+function recordsForDay(ru){
+  return RECORDS.filter(r=>isDated(r)&&r.date===ru)
     .filter(r=>!st.fTag||(r.tags||[]).includes(st.fTag))
     .filter(r=>!st.fType||r.type===st.fType)
-    .filter(r=>!st.term||myMatch(r))
+    .filter(r=>!st.term||recordMatches(r))
     .sort((a,b)=>(minutesOf(a.time)??1e9)-(minutesOf(b.time)??1e9));
 }
 
@@ -1187,8 +1187,8 @@ function nowMarks(){
   const ru=now.toLocaleDateString("ru-RU");
   const mins=now.getHours()*60+now.getMinutes();
   let cur=null,next=null,best=Infinity,last=-1;
-  myForRu(ru).filter(isTimed).forEach(r=>{
-    const span=spanOf(myTime(r),r.duration);
+  recordsForDay(ru).filter(isTimed).forEach(r=>{
+    const span=spanOf(recordTime(r),r.duration);
     if(!span)return;
     // Текущим считается последнее начатое дело, а не то, что длится прямо сейчас:
     // распорядок — цепочка пятиминутных дел, и метка «сейчас», гаснущая через
@@ -1210,23 +1210,23 @@ function markClass(r){
 function filtersOn(){return !!(st.term||st.fType||st.fTag);}
 // Компактный чип для недели и месяца — те же классы, что у пар, поэтому под
 // сетку не нужно ни одного нового CSS-правила.
-function myChipHTML(r,clash){
-  const cat=MY_TYPE[r.type]||MY_TYPE["Своё"];
+function chipHTML(r,clash){
+  const cat=CATEGORY[r.type]||CATEGORY["Своё"];
   // В сетке стоит только начало дела: колонка узкая, целый интервал в ней рвётся.
   // Полное время остаётся в подсказке.
-  const start=myTime(r).split("–")[0];
+  const start=recordTime(r).split("–")[0];
   const done=isDone(r);
   // В клетке стоит само название, а не аббревиатура: «ДМЛК» вместо «Достать
   // мясо из ларя» не читается, а подсказка на телефоне недоступна.
-  return `<div class="mline task-chip${clash?" clash":""}${done?" chip-done":""}" title="${esc(r.subject)}${myTime(r)?" · "+esc(myTime(r)):""}${done?" · сделано":""}${r.note?" · "+esc(r.note):""}">`
+  return `<div class="mline chip${clash?" clash":""}${done?" chip-done":""}" title="${esc(r.subject)}${recordTime(r)?" · "+esc(recordTime(r)):""}${done?" · сделано":""}${r.note?" · "+esc(r.note):""}">`
     +`${start?`<span class="mtime">${esc(start)}</span>`:""}`
     +`<span class="mabbr mtask" style="background:${cat.color}">${esc(r.subject)}</span></div>`;
 }
 
 /* Карточка дела. Галочка — единственное, что здесь можно нажать: отметку ставит
    тот, кто сейчас во дворе, и она про сегодняшний день, а не про расписание. */
-function myCardHTML(r,clash){
-  const cat=MY_TYPE[r.type]||MY_TYPE["Своё"];
+function cardHTML(r,clash){
+  const cat=CATEGORY[r.type]||CATEGORY["Своё"];
   const done=isDone(r);
   const note=r.note?`<div class="meta">${hl(r.note)}</div>`:"";
   const where=r.room?`<div class="room-side"><div class="rm"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg> ${hl(r.room)}</div><div class="rl">место</div></div>`:"";
@@ -1234,7 +1234,7 @@ function myCardHTML(r,clash){
     ? `<span class="check" role="img" aria-label="${done?"сделано":"не сделано"}" `
       +`title="${done?"Сделано":"Ещё не сделано"}"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>`
     : "";
-  return `<div class="lesson task${clash?" clash":""}${done?" is-done":""}" style="--stripe:${cat.color}">
+  return `<div class="card${clash?" clash":""}${done?" is-done":""}" style="--stripe:${cat.color}">
     <div class="row">
       ${check}
       <div class="linfo">
@@ -1251,38 +1251,38 @@ function myCardHTML(r,clash){
 // Строка записи в списке — с той же левой колонкой, что у пары: номер и время
 // стоят на одном месте во всех строках дня.
 // Пересекается ли своя запись с чем-то в этот день: с парой или с другой своей.
-function myClash(r,ruDate){
-  const span=spanOf(myTime(r),r.duration);
+function hasClash(r,ruDate){
+  const span=spanOf(recordTime(r),r.duration);
   if(!span)return false;
-  return myForRu(ruDate).filter(x=>x.id!==r.id)
-    .map(x=>spanOf(myTime(x),x.duration)).some(o=>overlaps(span,o));
+  return recordsForDay(ruDate).filter(x=>x.id!==r.id)
+    .map(x=>spanOf(recordTime(x),x.duration)).some(o=>overlaps(span,o));
 }
 
-function myRowHTML(r){
-  const t=myTime(r);
+function rowHTML(r){
+  const t=recordTime(r);
   const cls=markClass(r);
   const badge=cls===" now"?'<span class="badge-now">сейчас</span>'
     :cls===" next"?'<span class="badge-next">ближайшее</span>':"";
-  return `<div class="pair${cls}${isDone(r)?" done":""}"><div class="pair-time"><span class="n">${esc(t)}</span>${badge}</div>
-    <div class="stack">${myCardHTML(r,r._clash)}</div></div>`;
+  return `<div class="entry${cls}${isDone(r)?" done":""}"><div class="entry-time"><span class="n">${esc(t)}</span>${badge}</div>
+    <div class="stack">${cardHTML(r,r._clash)}</div></div>`;
 }
 function dayHTML(wi,w,di,d){
   if(st.fDay&&d.day!==st.fDay)return"";
   const isToday=sameDay(d._dt,new Date());
-  const dayMine=myForRu(d.date);
-  if(!dayMine.length)return"";
-  dayMine.forEach(r=>{ r._clash=myClash(r,d.date); });
-  const myRows=dayMine.map(myRowHTML).join("");
+  const dayRecords=recordsForDay(d.date);
+  if(!dayRecords.length)return"";
+  dayRecords.forEach(r=>{ r._clash=hasClash(r,d.date); });
+  const dayRows=dayRecords.map(rowHTML).join("");
   // Счётчик считает только дела со временем: правило дня — не задача, и
   // «сделано 3 из 34» не должно зависеть от того, сколько правил показано.
-  const timed=dayMine.filter(isTimed);
+  const timed=dayRecords.filter(isTimed);
   const done=timed.filter(isDone).length;
   const pct=timed.length?Math.round(done/timed.length*100):0;
   const counter=timed.length?`<span class="day-count">${done} из ${timed.length}</span>
     <span class="day-prog"><span style="width:${pct}%"></span></span>`:"";
   const head=`<div class="day-head"><span class="day-name">${d.day}</span>
     <span class="day-date">${d.date}</span>${isToday?'<span class="today-pill">сегодня</span>':""}${counter}</div>`;
-  return `<section class="day${isToday?" today":""}">${head}${myRows}</section>`;
+  return `<section class="day${isToday?" today":""}">${head}${dayRows}</section>`;
 }
 
 /* ==== ОТРИСОВКА · список, неделя, месяц ===================================== */
@@ -1299,7 +1299,7 @@ function plural(n,one,few,many){
 // которые надо задать маме. Группируем по горизонту, внутри по меткам: так видно,
 // что действует всегда, а что должно быть сделано за эти дни.
 function renderGoals(){
-  const loose=MY.filter(r=>!isDated(r));
+  const loose=RECORDS.filter(r=>!isDated(r));
   if(!loose.length)return `<div class="emptystate"><div class="big"><svg class="ic" aria-hidden="true"><use href="#i-flower"/></svg></div>Памятка пуста.</div>`;
 
   const order=[["season","Всегда"],["week","За эти дни"],["month","Потом"]];
@@ -1329,7 +1329,7 @@ function renderGoals(){
 function goalCardHTML(r){
   const waiting=(r.tags||[]).includes("разобрать");
   const period=r.period?`<span class="goal-when">${esc(r.period.replace(/\.\d{4}/g,""))}</span>`:"";
-  const grown=MY.filter(x=>x.parent===r.id).length;
+  const grown=RECORDS.filter(x=>x.parent===r.id).length;
   return `<div class="goal${waiting?" waiting":""}">
     <div class="goal-row"><span class="goal-name">${hl(r.subject)}</span>${period}</div>
     ${r.note?`<div class="goal-note">${hl(r.note)}</div>`:""}
@@ -1340,7 +1340,7 @@ function goalCardHTML(r){
 
 function spanBanner(){
   const[a,z]=currentRange();
-  const loose=MY.filter(r=>!isDated(r)).filter(r=>r.horizon!=="season").filter(r=>{
+  const loose=RECORDS.filter(r=>!isDated(r)).filter(r=>r.horizon!=="season").filter(r=>{
     if(r.horizon==="season")return false;                 // правила двора висят в «Памятке»
     const[from,to]=(r.period||"").split("-");
     const start=ruToDate(from), end=ruToDate(to);
@@ -1416,7 +1416,7 @@ function weekTable(wi){
       const cell=groupOverlapping(inHour).map(g=>g.length>1
         ? `<div class="mstack">${g.map(e=>e.html).join("")}</div>`
         : (g[0].clash ? `<div class="mstack lone">${g[0].html}</div>` : g[0].html)).join("");
-      html+=`<td class="c${t?" today":""}${inHour.length?" mine-tint":""}" data-day="${di}" data-week="${wi}">${cell}</td>`;
+      html+=`<td class="c${t?" today":""}${inHour.length?" has-work":""}" data-day="${di}" data-week="${wi}">${cell}</td>`;
     });
     html+="</tr>";
   });
@@ -1427,14 +1427,14 @@ function weekTable(wi){
 function weekEvents(w,wi,di){
   const d=w.days[di];
   const out=[];
-  myForRu(d.date).filter(isTimed).forEach(r=>{
-    const time=myTime(r);
+  recordsForDay(d.date).filter(isTimed).forEach(r=>{
+    const time=recordTime(r);
     out.push({hour:startHour(time),span:spanOf(time,r.duration),record:r,time});
   });
   // Наложение считается один раз здесь, чтобы список и сетка говорили одно и то же.
   out.forEach(e=>{ e.clash=out.some(o=>o!==e&&overlaps(e.span,o.span)); });
   out.sort((a,b)=>(a.span?a.span[0]:0)-(b.span?b.span[0]:0));
-  out.forEach(e=>{ e.html=myChipHTML(e.record,e.clash); });
+  out.forEach(e=>{ e.html=chipHTML(e.record,e.clash); });
   return out;
 }
 
@@ -1493,7 +1493,7 @@ function hourRange(days){
 function dayUsage(){
   const real=new Set(), any=new Set();
   DATA.weeks.forEach(w=>w.days.forEach((d,di)=>{
-    if(myForRu(d.date).length){ any.add(di); real.add(di); }
+    if(recordsForDay(d.date).length){ any.add(di); real.add(di); }
   }));
   return{real,any};
 }
@@ -1510,7 +1510,7 @@ function quietDays(){
 function weekColumns(wi){
   const w=DATA.weeks[wi];
   if(!w)return [0,1,2,3,4,5,6];
-  const cols=[0,1,2,3,4,5,6].filter(di=>w.days[di]&&myForRu(w.days[di].date).length);
+  const cols=[0,1,2,3,4,5,6].filter(di=>w.days[di]&&recordsForDay(w.days[di].date).length);
   return cols.length?cols:[0,1,2,3,4,5,6];
 }
 
@@ -1550,20 +1550,20 @@ function monthGrid(ptr){
     if(!ref){
       // День вне периода хозяйства: дел там нет, но если дело всё же
       // поставлено на такую дату — оно должно быть видно.
-      const outRecords=myForRu(dt.toLocaleDateString("ru-RU")).filter(isTimed);
-      const outMine=outRecords.map(r=>myChipHTML(r)).join("");
-      html+=`<div class="mcell${t?" today":""}${q}${outRecords.length?" mine-tint":""}"><div class="mn">${day}</div>${outMine}</div>`;continue;}
+      const outRecords=recordsForDay(dt.toLocaleDateString("ru-RU")).filter(isTimed);
+      const outChips=outRecords.map(r=>chipHTML(r)).join("");
+      html+=`<div class="mcell${t?" today":""}${q}${outRecords.length?" has-work":""}"><div class="mn">${day}</div>${outChips}</div>`;continue;}
     const d=DATA.weeks[ref.wi].days[ref.di];
-    const dayMine=myForRu(d.date);
+    const dayRecords=recordsForDay(d.date);
     // В клетке месяца — только дела со временем: правила и вопросы к маме живут
     // в «Памятке», в сетке им не место.
-    const timed=dayMine.filter(isTimed);
+    const timed=dayRecords.filter(isTimed);
     const doneCount=timed.filter(isDone).length;
     const lines=timed.length>6
       ? `<div class="mline msum"><i></i>${plural(timed.length,"дело","дела","дел")} · ${doneCount} ✓</div>`
-      : timed.map(r=>myChipHTML(r)).join("");
-    const dim=filtersOn()&&!dayMine.length?" dim":"";
-    const tint=dim||(dayMine.length?" mine-tint":"");
+      : timed.map(r=>chipHTML(r)).join("");
+    const dim=filtersOn()&&!dayRecords.length?" dim":"";
+    const tint=dim||(dayRecords.length?" has-work":"");
     html+=`<div class="mcell${t?" today":""}${q}${tint}" data-day="${ref.di}" data-week="${ref.wi}"><div class="mn">${day}</div>${lines}</div>`;
   }
   return html+"</div></div>";
@@ -1638,7 +1638,7 @@ function scrollToToday(){
 // Показать = подтянуть свои записи видимого отрезка и нарисовать. Две разные
 // работы, поэтому и функции две, а эта их соединяет.
 async function show(){
-  await loadMine(...visibleRuRange());
+  await loadRecords(...visibleRuRange());
   render();
 }
 // Границы показанного, русскими датами — в них записи и ищутся. В месяце шире
@@ -1732,10 +1732,10 @@ function showSugg(val){const box=$("suggbox");val=(val||"").trim().toLowerCase()
 
 /* ==== УПРАВЛЕНИЕ · фильтры, тема, меню ====================================== */
 function opts(sel,arr,ph){sel.innerHTML=`<option value="">${ph}</option>`+arr.map(v=>`<option value="${v}">${v}</option>`).join("");}
-/* Справочник дел один и он статический: категории заданы в MY_TYPE, а не
+/* Справочник дел один и он статический: категории заданы в CATEGORY, а не
    собираются из данных — пустая категория в фильтре лучше, чем исчезнувшая. */
 function collectDictionaries(){
-  return{types:Object.keys(MY_TYPE)};
+  return{types:Object.keys(CATEGORY)};
 }
 
 /* Наполнение выпадающих списков. Подсказки поиска собираются позже, в render():
@@ -1749,8 +1749,8 @@ function fillDictionaries(d){
 function fillSugg(){
   const seen=new Set(), out=[];
   const add=(v,kind,c)=>{const k=kind+"|"+v;if(!v||seen.has(k))return;seen.add(k);out.push({v,kind,c});};
-  MY.forEach(r=>{
-    add(r.subject,"дело",(MY_TYPE[r.type]||MY_TYPE["Своё"]).color);
+  RECORDS.forEach(r=>{
+    add(r.subject,"дело",(CATEGORY[r.type]||CATEGORY["Своё"]).color);
     add(r.room,"место","var(--blue)");
     (r.tags||[]).forEach(t=>add(t,"метка","var(--lav)"));
   });
@@ -1906,7 +1906,7 @@ function syncPeriodInputs(){
 function fillTagFilter(){
   const sel=$("f-tag");
   if(!sel)return;
-  const tags=myTags();
+  const tags=allTags();
   sel.innerHTML=`<option value="">Все</option>`+tags.map(t=>`<option value="${esc(t)}">#${esc(t)}</option>`).join("");
   if(st.fTag&&!tags.includes(st.fTag))st.fTag="";
   sel.value=st.fTag;
