@@ -15,7 +15,7 @@ import { chromium } from "playwright";
 
 const URL = process.env.SMOKE_URL || "http://localhost:8742/index.html";
 const PASSWORD = process.env.SCHEDULE_PASSWORD;
-const AT = process.env.SMOKE_AT || "2026-09-05T11:40:00";   // середина дня хозяйства
+const AT = process.env.SMOKE_AT || "2026-09-05T14:30:00";   // середина дня: круг позади, гуляет второй вольер
 const WIDTHS = [390, 768, 1200, 1700];
 
 if (!PASSWORD) {
