@@ -216,7 +216,6 @@
   .daterange input::-webkit-calendar-picker-indicator{padding:0;margin:0;opacity:.5;cursor:pointer;
     width:13px;height:13px}
   .dr-sep{color:var(--muted);font-size:11px;flex:none}
-  /* мультивыбор преподавателей */
   /* тот же сегментный тумблер, что и в меню, только на светлом фоне полосы */
   .seg-bar{flex:none;background:var(--panel);border:1px solid var(--line)}
   .seg-bar button{flex:none;padding:6px 14px}
@@ -320,7 +319,7 @@
   .badge-now{background:var(--now);color:var(--on-now)}
   .badge-next{background:var(--blue);color:var(--on-accent)}
   .stack{display:flex;flex-direction:column;gap:10px}
-  /* Полоска подгруппы — накладкой, а не рамкой: рамка у всех карточек одинаковая 1px,
+  /* Полоска категории — накладкой, а не рамкой: рамка у всех карточек одинаковая 1px,
      поэтому текст и плашки стоят на одной вертикали в любой строке. */
   .card{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);
     border-radius:14px;padding:12px 14px;box-shadow:0 2px 10px rgba(90,70,100,.05)}
@@ -331,18 +330,7 @@
   .entry.next{background:color-mix(in srgb,var(--blue) 7%,transparent);
     outline:2.5px dashed var(--blue);outline-offset:-2.5px}
   .entry.now .card,.entry.next .card{box-shadow:none}
-  /* пара на две подгруппы: 1-я — голубая секция, 2-я — мятная */
-  /* Сдвоенная пара — ОДНА карточка: половины разделены пунктиром, а не разъехались
-     двумя плашками. Акцент у неё серо-голубой, цвета подгрупп живут внутри половин.
-     Отступ слева тот же, что у одиночной карточки (1 + 14 = 15px). */
-  /* прижимаем к верху: при центрировании более короткая половина съезжала вниз
-     и строки «время + подгруппа» переставали быть на одной линии */
-  /* время внутри карточки — когда у подгрупп оно разное; выглядит так же,
-     как время слева, чтобы расписание читалось одним языком */
   .l-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-  /* заметка к занятию: свёрнута, раскрывается по клику */
-  /* в свёрнутом виде видно начало заметки, а не безликое «Заметка» */
-  /* в свёрнутом виде — короткое начало, чтобы заметка не растягивалась на всю карточку */
   .card .subj{font-family:"Fraunces",Georgia,serif,"Segoe UI Emoji","Apple Color Emoji";font-size:16px;font-weight:600;line-height:1.25}
   .card .meta{display:flex;flex-wrap:wrap;gap:7px 13px;margin-top:7px;color:var(--muted);font-size:13px;font-weight:500}
   .card .meta b{color:var(--ink);font-weight:600}
@@ -356,17 +344,12 @@
     overflow-wrap:anywhere}
   .room-side .rl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:2px}
   .entry.now .room-side{background:var(--now)} .entry.now .room-side .rm,.entry.now .room-side .rl{color:var(--on-now)}
-  /* Сайт личный: чужая подгруппа отфильтрована в match() и до заливки не
-     доходит. Остаются два состояния — моя пара (мятная) и общая (серо-голубая). */
   /* Карточка дела — на своём фоне: цвет несёт полоска категории слева, а не
      заливка. День с делами в сетке подкрашен слабо — чтобы пустые дни периода
      отличались от занятых, но цвет не спорил с плашками внутри. */
   .card{background:var(--panel)}
   .wk td.c.has-work,.mcell.has-work{
     background:color-mix(in srgb,var(--blue) 12%,var(--panel))}
-  /* А когда пары видны, ячейка уже покрашена по подгруппе. Мешать два цвета в
-     градиент — каша, поэтому своё отмечается полосой по нижнему краю: она
-     ложится поверх любой заливки и читается отдельно от неё. */
 
   /* ==== ВИД: НЕДЕЛЯ =========================================================== */
   /* week grid */
@@ -384,8 +367,7 @@
   /* ==== ВИД: МЕСЯЦ ============================================================ */
   .mcell:not(.empty),.wk td.c{cursor:pointer}
   /* month */
-  /* Дни без обычных пар занимают узкую колонку. Какие это дни — решает разметка
-     по данным: у разных групп самостоятельная работа в разные дни. */
+  /* Дни без дел занимают узкую колонку: какие это дни, решает quietDays(). */
   .mgrid{display:grid;gap:4px;min-width:560px}
   .mgrid .quiet{opacity:.7;font-size:11px}
   .mgrid .mh.quiet{opacity:.55}
@@ -397,7 +379,7 @@
   .mcell.empty{background:transparent;border-color:transparent;cursor:default}
   .mcell:hover:not(.empty){transform:translateY(-2px)}
   .mcell.today{border:2px solid var(--gold)}
-  /* При включённых фильтрах цвет остаётся только там, где есть подходящие пары:
+  /* При включённых фильтрах цвет остаётся только там, где есть подходящие дела:
      остальные дни гаснут, и нужное видно сразу. */
   .mcell.dim,.wk td.c.dim{background:var(--panel);opacity:.4}
   .mcell .mn{font-size:11px;font-weight:700;color:var(--muted);line-height:1.1}
@@ -416,10 +398,8 @@
     color:var(--ink);margin-top:2px}
   .msum i{width:8px;height:8px;border-radius:50%;background:var(--mint);flex:none}
   .mtime{color:var(--ink);font-weight:700;font-size:9.5px;min-width:28px;flex:none}
-  /* Номер подгруппы у пары: в месяце фон клетки общий на весь день, поэтому
-     принадлежность каждой пары показывает кружок, а не заливка. */
-  /* Наложение по времени рисуется как сдвоенная пара: один блок, внутри
-     пунктирная граница. Своё стоит сверху — оно приоритетнее. */
+  /* Наложение по времени — один блок с пунктирной границей внутри, а не две
+     плашки рядом: видно, что дела делят одно время. */
   .mstack{border:1.5px dashed color-mix(in srgb,var(--ink) 26%,transparent);
     border-radius:8px;padding:2px 3px;margin-top:1px}
   .mstack .mline + .mline{border-top:1.5px dashed color-mix(in srgb,var(--ink) 26%,transparent);
@@ -468,12 +448,6 @@
   .goal-grown{font-size:11px;color:var(--muted)}
   .card.clash{outline:2px solid var(--now);outline-offset:-2px}
 
-  /* ==== ЗАЛИВКА ПО ПОДГРУППАМ · общая ========================================= */
-
-  /* ==== ЛИЧНЫЕ ЗАДАЧИ ========================================================== */
-  /* Своя запись — та же .card: полоска слева через --stripe красит её по типу,
-     а розовая заливка выше говорит, что запись моя, а не из расписания группы. */
-
   /* ==== ПОПАП ДНЯ ============================================================= */
   /* попап дня — открывается кликом по ячейке в месяце и в неделе */
   .pop{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
@@ -499,9 +473,6 @@
   .pop-body .entry-time .n{font-size:13px}
   .pop-body .badge-now,.pop-body .badge-next{margin-top:3px;padding:1px 6px}
   .pop-body .card{padding:8px 10px;border-radius:12px;box-shadow:none}
-  /* сдвоенная пара в попапе выглядит так же, как в списке: одна карточка,
-     половины вплотную, без белых краёв */
-  .pop-body .card.group{padding:0}
   .pop-body .card .subj{font-size:13.5px;line-height:1.2}
   .pop-body .card .meta{gap:4px 10px;margin-top:4px;font-size:11.5px}
   .pop-body .pill{font-size:10px;padding:2px 7px}
@@ -535,7 +506,7 @@
 
   /* ==== ПЛАШКА ФИЛЬТРОВ, ПОДВАЛ =============================================== */
   /* Пустое расписание из-за фильтра пугает: человек мог забыть о нём и решить,
-     что пар нет. Плашка объясняет и даёт сбросить, не заходя в меню. */
+     что дел нет. Плашка объясняет и даёт сбросить, не заходя в меню. */
   .filternote{display:flex;align-items:center;gap:8px;margin:10px 0 0;padding:8px 12px;
     background:color-mix(in srgb,var(--gold) 18%,var(--panel));border:1px solid var(--line);
     border-radius:12px;font-size:13px;font-weight:600;color:var(--ink)}
@@ -549,8 +520,7 @@
   @media(max-width:1023px){ .weekpick{max-width:none} }
   @media(max-width:1023px){ .seg-bar{display:none!important} }
   /* Телефон: попап во весь экран и максимально плотно, чтобы день
-     помещался по высоте без прокрутки. Подгруппы остаются в две колонки —
-     если их складывать друг под друга, высота удваивается. */
+     помещался по высоте без прокрутки. */
   @media(max-width:640px){
     .pop{padding:0}
     .pop-card{width:100%;height:100%;max-height:100%;border-radius:0;border:0}
@@ -564,7 +534,7 @@
     .pop-body .card .meta{font-size:10.5px;gap:3px 7px;margin-top:3px}
     .pop-body .pill{font-size:9.5px;padding:1px 6px}
     .pop-body .row{flex-direction:column;align-items:flex-start;gap:4px}
-    /* аудитория строкой, а не крупной плашкой — она съедала половину ширины */
+    /* место строкой, а не крупной плашкой — она съедала половину ширины */
     .pop-body .room-side{flex-direction:row;gap:4px;background:none;padding:0;width:auto}
     .pop-body .room-side .rm{font-size:12px;font-family:inherit;font-weight:700}
     .pop-body .room-side .rm .ic{width:12px;height:12px}
@@ -583,10 +553,8 @@
   }
   @media(max-width:640px){
     .entry{grid-template-columns:1fr;gap:5px}
-    /* колонка времени схлопывается в строку — время осталось бы дважды подряд,
-       поэтому слева оставляем только номер пары, время читается в карточке */
+    /* колонка времени схлопывается в строку над карточкой */
     .entry-time{display:flex;gap:8px;align-items:baseline}
-    .entry-time .t{display:none}
     .wk td.tm{width:44px}
   }
 </style>
@@ -850,7 +818,7 @@ document.getElementById('gateForm').addEventListener('submit', async e => {
   <header class="ribbon">
     <div class="wrap inner">
       <div>
-        <div class="eyebrow">этап: хозяйство мамы · 3–9 сентября</div>
+        <div class="eyebrow">личный календарь</div>
         <div class="h1row">
           <h1 class="font-display">Расписание</h1>
           <button id="theme" class="theme-btn" title="Тема оформления" aria-label="Тема оформления"><svg class="ic" aria-hidden="true"><use href="#i-auto"/></svg></button>
@@ -1001,10 +969,10 @@ function centerToday(){requestAnimationFrame(()=>{
   cont.scrollLeft+=(er.left-cr.left)-(cont.clientWidth-er.width)/2;});}
 
 /* ==== ПОДГОТОВКА ДАННЫХ =====================================================
-   Расписания вуза здесь нет и не было: всё, что показывает сайт, — свои записи.
-   Каркас дней строится из периода и живёт только в памяти: отдельный файл с
-   пустыми днями пришлось бы держать в согласии с датами руками. */
-const PERIOD={from:"03.09.2026",to:"09.09.2026"};
+   Всё, что показывает сайт, — свои записи. Каркас дней строится из периода и живёт только в памяти: отдельный файл с
+   пустыми днями пришлось бы держать в согласии с датами руками.
+   Период — окно, которое показывает календарь; сдвигается правкой этой строки. */
+const PERIOD={from:"03.09.2026",to:"31.12.2026"};
 
 function buildSkeleton(){
   const start=ruToDate(PERIOD.from), end=ruToDate(PERIOD.to);
@@ -1023,7 +991,7 @@ function buildSkeleton(){
   return{weeks};
 }
 
-// В периоде день или вне его: за границами хозяйства дел нет и быть не может.
+// В периоде день или вне его: за его границами дел нет и быть не может.
 function inPeriod(dt){
   const a=ruToDate(PERIOD.from), z=ruToDate(PERIOD.to);
   return !!dt&&dt>=a&&dt<=eod(z);
@@ -1035,7 +1003,7 @@ function prep(){
     d._dt=pdate(d.date);
     if(!d._dt)return;
     DATE_MAP[keyOf(d._dt)]={wi,di};
-    // Месяц попадает в переключатель, только если в нём есть дни хозяйства:
+    // Месяц попадает в переключатель, только если в нём есть дни периода:
     // первая неделя цепляет хвост августа, показывать его как месяц незачем.
     const mk=d._dt.getFullYear()+"-"+d._dt.getMonth();
     if(!seen.has(mk)&&inPeriod(d._dt)){
@@ -1049,7 +1017,7 @@ function allBounds(){
   all.sort((a,b)=>a-b);return[all[0],all[all.length-1]];}
 function weekDates(i){const ds=DATA.weeks[i].days.filter(d=>inPeriod(d._dt)).map(d=>d._dt).sort((a,b)=>a-b);
   return ds.length?[ds[0],ds[ds.length-1]]:[null,null];}
-/* Подпись недели — по дням хозяйства: неделя может входить в период не целиком,
+/* Подпись недели — по дням периода: неделя может входить в период не целиком,
    и показывать её края, где дел нет, значит обещать несуществующее. */
 function weekRange(i){
   const ds=DATA.weeks[i].days.filter(d=>inPeriod(d._dt)).map(d=>d._dt);
@@ -1061,9 +1029,7 @@ function todayWeek(){const now=new Date();for(let i=0;i<DATA.weeks.length;i++){c
   if(!a)continue;if(now<=eod(z))return i;}return DATA.weeks.length-1;}
 
 /* ==== ЛИЧНЫЕ ЗАПИСИ ==========================================================
-   Пары группы приходят из data.json, свои записи — из my-data.json по индексу.
-   Запись устроена как пара: предмет, тип, преподаватель, аудитория, — и встаёт
-   в ту же сетку, а не отдельным слоем.
+   Записи лежат в my-data.json, к ним — зашифрованный индекс в index.json.
 
    Берём из файла только показанный отрезок: индекс отсортирован, поэтому нужные
    записи лежат подряд. Расшифрованное оседает в кэше — перелистывание недель
@@ -1141,7 +1107,6 @@ function ruToDate(ru){
   const m=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(ru||"");
   return m?new Date(Number(m[3]),Number(m[2])-1,Number(m[1])):null;
 }
-// У дела есть только время: номеров пар в хозяйстве нет.
 function recordTime(r){return r.time||"";}
 function recordMatches(r){
   const hay=(r.subject+" "+(r.note||"")+" "+(r.teacher||"")+" "+(r.tags||[]).join(" ")).toLowerCase();
@@ -1248,9 +1213,7 @@ function cardHTML(r,clash){
   </div>`;
 }
 
-// Строка записи в списке — с той же левой колонкой, что у пары: номер и время
-// стоят на одном месте во всех строках дня.
-// Пересекается ли своя запись с чем-то в этот день: с парой или с другой своей.
+// Пересекается ли запись с другой записью этого дня.
 function hasClash(r,ruDate){
   const span=spanOf(recordTime(r),r.duration);
   if(!span)return false;
@@ -1295,8 +1258,8 @@ function plural(n,one,few,many){
   return `${n} ${word}`;
 }
 
-// Памятка: всё, у чего нет дня и часа, — правила двора, разовые дела и вопросы,
-// которые надо задать маме. Группируем по горизонту, внутри по меткам: так видно,
+// Памятка: всё, у чего нет дня и часа, — правила, разовые дела и вопросы,
+// которые ждут ответа. Группируем по горизонту, внутри по меткам: так видно,
 // что действует всегда, а что должно быть сделано за эти дни.
 function renderGoals(){
   const loose=RECORDS.filter(r=>!isDated(r));
@@ -1305,7 +1268,7 @@ function renderGoals(){
   const order=[["season","Всегда"],["week","За эти дни"],["month","Потом"]];
   const waiting=loose.filter(r=>(r.tags||[]).includes("разобрать")).length;
   let html=`<div class="goals-head"><span class="goals-count">${plural(loose.length,"пункт","пункта","пунктов")} без времени</span>`
-    +(waiting?`<span class="goals-waiting">${waiting} спросить у мамы</span>`:"")+`</div>`;
+    +(waiting?`<span class="goals-waiting">${waiting} ждут ответа</span>`:"")+`</div>`;
 
   order.forEach(([horizon,title])=>{
     const group=loose.filter(r=>r.horizon===horizon);
@@ -1333,7 +1296,7 @@ function goalCardHTML(r){
   return `<div class="goal${waiting?" waiting":""}">
     <div class="goal-row"><span class="goal-name">${hl(r.subject)}</span>${period}</div>
     ${r.note?`<div class="goal-note">${hl(r.note)}</div>`:""}
-    <div class="goal-foot">${waiting?`<span class="goal-flag">спросить у мамы</span>`:""}`
+    <div class="goal-foot">${waiting?`<span class="goal-flag">ждёт ответа</span>`:""}`
     +`${grown?`<span class="goal-grown">из неё: ${grown}</span>`:""}</div>
   </div>`;
 }
@@ -1364,9 +1327,9 @@ function emptyState(){
   const icon=`<div class="emptystate"><div class="big"><svg class="ic" aria-hidden="true"><use href="#i-cloudsun"/></svg></div>`;
   const now=new Date(), [a,z]=allBounds();
   if(!filtersOn()&&z&&now>eod(z))
-    return icon+`Хозяйство сдано маме: 3–8 сентября позади.</div>`;
+    return icon+`Период закончился ${PERIOD.to}.</div>`;
   if(!filtersOn()&&a&&now<a)
-    return icon+`Хозяйство начинается 3 сентября.</div>`;
+    return icon+`Период начинается ${PERIOD.from}.</div>`;
   return icon+`Ничего не нашлось. Попробуй сбросить фильтры.</div>`;
 }
 
@@ -1444,7 +1407,7 @@ function minutesOf(hhmm){
   return m?Number(m[1])*60+Number(m[2]):null;
 }
 // Начало и конец события. У записи без длительности конца нет — она считается
-// точкой: этого хватает, чтобы поймать «поставил дело на время пары».
+// точкой: этого хватает, чтобы поймать «поставил два дела на одно время».
 function spanOf(time,duration){
   const parts=(time||"").split("–");
   const start=minutesOf(parts[0]);
@@ -1452,15 +1415,15 @@ function spanOf(time,duration){
   const end=parts[1]!==undefined?minutesOf(parts[1]):(duration?start+Number(duration):start);
   return [start,end===null?start:end];
 }
-// Пересечение по времени. Впритык — конец в конец — не считается: пара до 14:00
+// Пересечение по времени. Впритык — конец в конец — не считается: дело до 14:00
 // и дело с 14:00 не конфликтуют.
 function overlaps(a,b){
   if(!a||!b)return false;
   return a[0]<b[1]&&b[0]<a[1];
 }
 
-// Пересекающиеся события собираются в один блок — как сдвоенная пара, которая
-// рисуется одной карточкой с пунктиром, а не двумя плашками.
+// Пересекающиеся события собираются в один блок: одна карточка с пунктиром,
+// а не две плашки рядом.
 function groupOverlapping(events){
   const groups=[];
   events.forEach(e=>{
@@ -1486,27 +1449,19 @@ function hourRange(days){
   return Array.from({length:last-first+1},(_,i)=>first+i);
 }
 
-// индекс месяца, в котором лежит выбранная неделя (чтобы не открывать пустой август)
-/* Какие дни показывать и какие сжимать — решают данные, а не номер дня.
-   У разных групп самостоятельная работа в разные дни, а пары могут быть
-   и в воскресенье, поэтому ничего нельзя прибивать к четвергу или к Пн-Сб. */
-function dayUsage(){
-  const real=new Set(), any=new Set();
-  DATA.weeks.forEach(w=>w.days.forEach((d,di)=>{
-    if(recordsForDay(d.date).length){ any.add(di); real.add(di); }
-  }));
-  return{real,any};
-}
-/* Дни без дел — вне периода хозяйства. Показываем узкой колонкой:
-   место занимать им незачем. */
+/* Дни недели, в которые за весь период нет ни одного дела, — узкой колонкой:
+   место занимать им незачем. Решают данные, а не номер дня: прибивать
+   выходные к субботе и воскресенью было бы враньём. */
 function quietDays(){
-  const u=dayUsage();
-  return new Set([0,1,2,3,4,5,6].filter(di=>!u.real.has(di)));
+  const busy=new Set();
+  DATA.weeks.forEach(w=>w.days.forEach((d,di)=>{
+    if(recordsForDay(d.date).length)busy.add(di);
+  }));
+  return new Set([0,1,2,3,4,5,6].filter(di=>!busy.has(di)));
 }
-/* Дни, которые вообще есть в расписании. Пустые не рисуем. */
-/* Колонки — дни этой недели, где есть дела. Период начинается в четверг и
-   кончается во вторник, поэтому у каждой недели свой набор колонок: пустые
-   понедельник и вторник в первой неделе — обещание дел, которых там нет. */
+/* Колонки — дни этой недели, где есть дела, поэтому у каждой недели свой набор:
+   период начинается в четверг, и пустые понедельник и вторник в первой неделе
+   были бы обещанием дел, которых там нет. */
 function weekColumns(wi){
   const w=DATA.weeks[wi];
   if(!w)return [0,1,2,3,4,5,6];
@@ -1548,14 +1503,14 @@ function monthGrid(ptr){
     const dt=new Date(mo.y,mo.m,day);const ref=DATE_MAP[keyOf(dt)];const t=sameDay(dt,now);
     const q=quiet.has((dt.getDay()+6)%7)?" quiet":"";
     if(!ref){
-      // День вне периода хозяйства: дел там нет, но если дело всё же
+      // День вне периода: дел там нет, но если дело всё же
       // поставлено на такую дату — оно должно быть видно.
       const outRecords=recordsForDay(dt.toLocaleDateString("ru-RU")).filter(isTimed);
       const outChips=outRecords.map(r=>chipHTML(r)).join("");
       html+=`<div class="mcell${t?" today":""}${q}${outRecords.length?" has-work":""}"><div class="mn">${day}</div>${outChips}</div>`;continue;}
     const d=DATA.weeks[ref.wi].days[ref.di];
     const dayRecords=recordsForDay(d.date);
-    // В клетке месяца — только дела со временем: правила и вопросы к маме живут
+    // В клетке месяца — только дела со временем: дела без дня и часа живут
     // в «Памятке», в сетке им не место.
     const timed=dayRecords.filter(isTimed);
     const doneCount=timed.filter(isDone).length;
@@ -1586,24 +1541,23 @@ function fillPicker(){
     sel.innerHTML=DATA.weeks.map((x,i)=>`<option value="${i}">${weekRange(i).replace(/\.20\d\d/g,"")}</option>`).join("");
     sel.value=String(st.cur);
     sel.setAttribute("aria-label","Неделя");
-    // Чип недели показывает, сколько дней хозяйства в ней осталось: чётность
-    // была понятием расписания вуза, а здесь считается совсем другое.
+    // Чип недели показывает, сколько дней периода в ней осталось.
     const left=w.days.filter(d=>inPeriod(d._dt)&&eod(d._dt)>=new Date()).length;
     tag.hidden=false;
     tag.className="wtag "+(left?"ahead":"past");
     tag.textContent=left?plural(left,"день","дня","дней")+" впереди":"позади";
     // Показано может быть несколько недель — подпись говорит про то, что открыто,
     // а не про ту неделю, что стоит в селекторе.
-    // Показанный отрезок обрезаем периодом: неделя шире хозяйства, и подпись
+    // Показанный отрезок обрезаем периодом: неделя шире него, и подпись
     // «31.08 – 13.09» обещала бы дни, в которых дел нет и не будет.
     const[a,z]=currentRange();
     const[pa,pz]=allBounds();
     const from=a>pa?a:pa, to=z<pz?z:pz;
     $("range-sub").textContent=st.view==="goals"
-      ? "Правила, разовые дела и вопросы к маме"
+      ? "Дела без дня и часа"
       : from<=to
         ? from.toLocaleDateString("ru-RU")+" – "+to.toLocaleDateString("ru-RU")
-        : "вне периода хозяйства";
+        : "вне периода";
   }
   sel.style.paddingRight=(document.querySelector(".wsel-end").offsetWidth+14)+"px";
 }
